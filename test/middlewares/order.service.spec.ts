@@ -4,7 +4,7 @@ import { col } from "sequelize";
 
 describe("Order Middleware", () => {
   let model: any;
-  let req: Partial<Request> & { query: any }; // Ensure 'query' is defined in req
+  let req: Partial<Request> & { sequelizeQueryParser: any; query: any }; // Ensure 'query' and 'sequelizeQueryParser' are defined in req
   let res: Partial<Response>;
   let next: jest.Mock;
 
@@ -20,7 +20,7 @@ describe("Order Middleware", () => {
     req = {
       sequelizeQueryParser: { model: model },
       query: { order: undefined }, // Define 'query' here
-    } as Partial<Request> & { query: any };
+    } as Partial<Request> & { query: any; sequelizeQueryParser: any };
     res = {
       status: jest.fn().mockReturnThis(), // Ensure 'status' returns 'this' (res) for chaining
       json: jest.fn(),
@@ -31,9 +31,11 @@ describe("Order Middleware", () => {
   it("should set default order when req.query.order is undefined", async () => {
     await order(req as Request, res as Response, next);
 
-    expect(req.query).toBeDefined();
-    expect(req.query.order).toBeDefined();
-    expect(req.query.order).toEqual([[col("createdAt"), "DESC"]]);
+    expect(req.sequelizeQueryParser).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toEqual([
+      [col("createdAt"), "DESC"],
+    ]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 
@@ -45,9 +47,9 @@ describe("Order Middleware", () => {
 
     await order(req as Request, res as Response, next);
 
-    expect(req.query).toBeDefined();
-    expect(req.query.order).toBeDefined();
-    expect(req.query.order).toEqual([[col("id"), "DESC"]]);
+    expect(req.sequelizeQueryParser).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toEqual([[col("id"), "DESC"]]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 
@@ -56,9 +58,11 @@ describe("Order Middleware", () => {
 
     await order(req as Request, res as Response, next);
 
-    expect(req.query).toBeDefined();
-    expect(req.query.order).toBeDefined();
-    expect(req.query.order).toEqual([[col("otherAttribute"), "ASC"]]);
+    expect(req.sequelizeQueryParser).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toBeDefined();
+    expect(req.sequelizeQueryParser.order).toEqual([
+      [col("otherAttribute"), "ASC"],
+    ]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 

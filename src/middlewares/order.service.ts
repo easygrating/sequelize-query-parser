@@ -54,8 +54,8 @@ export async function order<T extends Model>(
       order = parsedOrder;
     }
 
-    // @ts-ignore since mutating req.query.order is generally not recommended.
-    req.query.order = order;
+    // @ts-ignore since sequelizeQueryParser does not exist on req object by default.
+    req.sequelizeQueryParser.order = order;
 
     next();
   } catch (error) {
