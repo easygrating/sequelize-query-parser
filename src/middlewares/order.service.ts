@@ -4,7 +4,7 @@ import { col, Model, ModelStatic } from "sequelize";
 /**
  * Middleware to create a Sequelize query order object. The `req.query.order`
  * value, for example `date:desc,order=name:asc`, will yield a
- * sequelize order object as follows:
+ * Sequelize order object as follows:
  * @example
  * ```js
  * [
@@ -14,7 +14,7 @@ import { col, Model, ModelStatic } from "sequelize";
  * ```
  * By default, the `createdAt` attribute is used, obtained from the model's attributes,
  * or the `primaryKey` in descending order if `createdAt` is not present, in case
- * `req.query.order` is not defined or not properly formatted.
+ * `req.query.order` is not defined.
  *
  * @param model - Sequelize model to extract attributes.
  * @param req - Express Request object.
