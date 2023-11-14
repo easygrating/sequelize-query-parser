@@ -18,6 +18,7 @@ describe("Order Middleware", () => {
       })),
     } as any;
     req = {
+      sequelizeQueryParser: { model: model },
       query: { order: undefined }, // Define 'query' here
     } as Partial<Request> & { query: any };
     res = {
@@ -28,7 +29,7 @@ describe("Order Middleware", () => {
   });
 
   it("should set default order when req.query.order is undefined", async () => {
-    await order(model, req as Request, res as Response, next);
+    await order(req as Request, res as Response, next);
 
     expect(req.query).toBeDefined();
     expect(req.query.order).toBeDefined();
@@ -42,7 +43,7 @@ describe("Order Middleware", () => {
       otherAttribute: { field: "otherAttribute" },
     }));
 
-    await order(model, req as Request, res as Response, next);
+    await order(req as Request, res as Response, next);
 
     expect(req.query).toBeDefined();
     expect(req.query.order).toBeDefined();
@@ -53,7 +54,7 @@ describe("Order Middleware", () => {
   it("should return a valid order when req.query.order is defined", async () => {
     req.query.order = "otherAttribute:asc";
 
-    await order(model, req as Request, res as Response, next);
+    await order(req as Request, res as Response, next);
 
     expect(req.query).toBeDefined();
     expect(req.query.order).toBeDefined();
@@ -71,7 +72,7 @@ describe("Order Middleware", () => {
       .mockReturnValue(res as Response);
     const jsonSpy = jest.spyOn(res, "json");
 
-    await order(model, req as Request, res as Response, next);
+    await order(req as Request, res as Response, next);
 
     expect(errorSpy).toHaveBeenCalled();
     expect(statusSpy).toHaveBeenCalledWith(500);

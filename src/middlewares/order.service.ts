@@ -16,18 +16,19 @@ import { col, Model, ModelStatic } from "sequelize";
  * or the `primaryKey` in descending order if `createdAt` is not present, in case
  * `req.query.order` is not defined.
  *
- * @param model - Sequelize model to extract attributes.
  * @param req - Express Request object.
  * @param res - Express Response object.
  * @param next - Express NextFunction to pass control to the next middleware/controller.
  */
 export async function order<T extends Model>(
-  model: ModelStatic<T>,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
+    // @ts-ignore since sequelizeQueryParser does not exist on req object by default.
+    const model = req.sequelizeQueryParser.model as ModelStatic<T>;
+
     const primaryKey = model.primaryKeyAttribute;
     const attributes = Object.keys(model.getAttributes());
     const timestampKey = attributes.find((key) => {
@@ -46,15 +47,15 @@ export async function order<T extends Model>(
         // Check if the specified column exists in the model's attributes
         if (!attributes.includes(column)) {
           // Handle when the attribute doesn't exist in the model
-          throw new Error(`Attribute '${column}' not found in the model`);          
+          throw new Error(`Attribute '${column}' not found in the model`);
         }
         return [col(column), direction.toUpperCase()] as [any, "ASC" | "DESC"];
       });
       order = parsedOrder;
     }
 
-    // @ts-ignore
-    req.query.order = order
+    // @ts-ignore since mutating req.query.order is generally not recommended.
+    req.query.order = order;
 
     next();
   } catch (error) {
