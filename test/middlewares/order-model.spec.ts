@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { order } from "./../../src/middlewares/order.service";
+import { order } from "./../../src/middlewares/order-model";
 import { col } from "sequelize";
 
 describe("Order Middleware", () => {
