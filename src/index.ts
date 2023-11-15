@@ -1,1 +1,1 @@
-export { order } from './middlewares/order.service';
+export * from "./middlewares/build-model";
