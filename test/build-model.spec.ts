@@ -5,7 +5,7 @@ import { SequelizeQueryParserRequestInterface } from "../src/interfaces";
 
 const db = require("../example/db");
 describe("Build Model Middleware", () => {
-  test("Must throw an error if model param is not associate with an existing model and not call next", () => {
+  it("Must throw an error if model param is not associate with an existing model and not call next", () => {
     const middleware = buildModel(db);
     const fakeNext = jest.fn();
     expect(() =>
@@ -14,7 +14,7 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(0);
   });
 
-  test("Must throw an error if modelName is not associate with an existing model and not call next", () => {
+  it("Must throw an error if modelName is not associate with an existing model and not call next", () => {
     const middleware = buildModel(db, "pet");
     const fakeNext = jest.fn();
     expect(() =>
@@ -23,7 +23,7 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(0);
   });
 
-  test("It must load Province model into sequelizeQueryParser request object matching with route param", () => {
+  it("Must load Province model into sequelizeQueryParser request object matching with route param", () => {
     const middleware = buildModel(db);
     const fakeNext = jest.fn();
     const request: Partial<SequelizeQueryParserRequestInterface> = {
@@ -37,7 +37,7 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
-  test("It must load Province model into sequelizeQueryParser request object matching with a given model name", () => {
+  it("Must load Province model into sequelizeQueryParser request object matching with a given model name", () => {
     const middleware = buildModel(db, "Municipality");
     const fakeNext = jest.fn();
     const request: Partial<SequelizeQueryParserRequestInterface> = {
