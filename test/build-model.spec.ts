@@ -4,8 +4,8 @@ import { MODEL_NOT_FOUND_ERROR } from "../src/constants";
 import { SequelizeQueryParserRequestInterface } from "../src/interfaces";
 
 const db = require("../example/db");
-describe("Build model middleware unit test", () => {
-  test("It must throw an error if model param is not associate with an existing model and not call next", () => {
+describe("Build Model Middleware", () => {
+  test("Must throw an error if model param is not associate with an existing model and not call next", () => {
     const middleware = buildModel(db);
     const fakeNext = jest.fn();
     expect(() =>
@@ -14,7 +14,7 @@ describe("Build model middleware unit test", () => {
     expect(fakeNext.mock.calls).toHaveLength(0);
   });
 
-  test("It must throw an error if modelName is not associate with an existing model and not call next", () => {
+  test("Must throw an error if modelName is not associate with an existing model and not call next", () => {
     const middleware = buildModel(db, "pet");
     const fakeNext = jest.fn();
     expect(() =>
