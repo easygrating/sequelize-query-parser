@@ -1,26 +1,25 @@
-import { Request, Response } from "express";
-import { order } from "./../../src/middlewares/order-model";
+import { Response } from "express";
+import { orderModel } from "./../../src/middlewares/order-model";
 import { col } from "sequelize";
+import { SequelizeQueryParserRequestInterface } from "../../src/interfaces";
+import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../../src/constants";
 
+const db = require("./../../example/db");
 describe("Order Middleware", () => {
-  let model: any;
-  let req: Partial<Request> & { sequelizeQueryParser: any; query: any }; // Ensure 'query' and 'sequelizeQueryParser' are defined in req
+  let req: Partial<SequelizeQueryParserRequestInterface> & {
+    sequelizeQueryParser: any;
+    query: any;
+  };
   let res: Partial<Response>;
   let next: jest.Mock;
 
   beforeEach(() => {
-    model = {
-      primaryKeyAttribute: "id",
-      getAttributes: jest.fn(() => ({
-        id: { field: "id" },
-        createdAt: { field: "createdAt" },
-        otherAttribute: { field: "otherAttribute" },
-      })),
-    } as any;
     req = {
-      sequelizeQueryParser: { model: model },
-      query: { order: undefined }, // Define 'query' here
-    } as Partial<Request> & { query: any; sequelizeQueryParser: any };
+      sequelizeQueryParser: {
+        model: db["User"],
+      },
+      query: {}, // Define query here
+    };
     res = {
       status: jest.fn().mockReturnThis(), // Ensure 'status' returns 'this' (res) for chaining
       json: jest.fn(),
@@ -29,9 +28,12 @@ describe("Order Middleware", () => {
   });
 
   it("should set default order when req.query.order is undefined", async () => {
-    await order(req as Request, res as Response, next);
-
-    expect(req.sequelizeQueryParser).toBeDefined();
+    const middleware = orderModel();
+    await middleware(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
     expect(req.sequelizeQueryParser.order).toBeDefined();
     expect(req.sequelizeQueryParser.order).toEqual([
       [col("createdAt"), "DESC"],
@@ -39,49 +41,57 @@ describe("Order Middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
-  it("should set order by id when req.query.order is undefined and createdAt does not exists", async () => {
-    model.getAttributes = jest.fn(() => ({
-      id: { field: "id" },
-      otherAttribute: { field: "otherAttribute" },
-    }));
-
-    await order(req as Request, res as Response, next);
-
-    expect(req.sequelizeQueryParser).toBeDefined();
+  it("should set order by id when req.query.order is undefined and timestamps are disabled", async () => {
+    req.sequelizeQueryParser.model = db["Province"];
+    const middleware = orderModel();
+    await middleware(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
     expect(req.sequelizeQueryParser.order).toBeDefined();
     expect(req.sequelizeQueryParser.order).toEqual([[col("id"), "DESC"]]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 
   it("should return a valid order when req.query.order is defined", async () => {
-    req.query.order = "otherAttribute:asc";
-
-    await order(req as Request, res as Response, next);
-
-    expect(req.sequelizeQueryParser).toBeDefined();
+    req.query.order = "name:asc";
+    const middleware = orderModel();
+    await middleware(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
     expect(req.sequelizeQueryParser.order).toBeDefined();
-    expect(req.sequelizeQueryParser.order).toEqual([
-      [col("otherAttribute"), "ASC"],
-    ]);
+    expect(req.sequelizeQueryParser.order).toEqual([[col("name"), "ASC"]]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 
-  it("should respond with 500 and an error message for invalid attribute", async () => {
+  it("should throw an error when attribute specified in req.query.order does not exist in the model", async () => {
     req.query.order = "invalidAttribute:asc";
+    const middleware = orderModel();
+    await expect(async () => {
+      await middleware(
+        req as SequelizeQueryParserRequestInterface,
+        res as Response,
+        next
+      );
+    }).rejects.toThrow(
+      `Attribute 'invalidAttribute' was not found in the model`
+    );
+    expect(next).not.toHaveBeenCalled();
+  });
 
-    // Mock the error handling for 500 response
-    const errorSpy = jest.spyOn(console, "error").mockImplementation();
-    const statusSpy = jest
-      .spyOn(res, "status")
-      .mockReturnValue(res as Response);
-    const jsonSpy = jest.spyOn(res, "json");
-
-    await order(req as Request, res as Response, next);
-
-    expect(errorSpy).toHaveBeenCalled();
-    expect(statusSpy).toHaveBeenCalledWith(500);
-    expect(jsonSpy).toHaveBeenCalledWith({ error: "Internal server error" });
-
-    errorSpy.mockRestore();
+  it("should throw an error when req.sequelizeQueryParser or req.sequelizeQueryParser.model is not defined", async () => {
+    req.sequelizeQueryParser = undefined;
+    const middleware = orderModel();
+    await expect(async () => {
+      await middleware(
+        req as SequelizeQueryParserRequestInterface,
+        res as Response,
+        next
+      );
+    }).rejects.toThrow(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+    expect(next).not.toHaveBeenCalled();
   });
 });
