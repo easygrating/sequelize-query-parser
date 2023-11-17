@@ -1,6 +1,6 @@
 import { Request } from "express";
 import { Model } from "sequelize";
-import { ORDER_SORT_ASC, ORDER_SORT_DESC } from "./constants";
+import { SortOrder } from "./enums";
 
 /**
  * Extends the Express Request object to store Sequelize library-specific data.
@@ -24,7 +24,7 @@ export interface SequelizeQueryParserDataInterface {
   /**
    * The Sequelize order property to be used in a generic query of a list route.
    */
-  order: [any, typeof ORDER_SORT_ASC | typeof ORDER_SORT_DESC][] | null;
+  order: OrderType[] | null;
 
   /**
    * Additional properties for utility purposes.
@@ -32,3 +32,8 @@ export interface SequelizeQueryParserDataInterface {
    */
   [key: string]: any;
 }
+
+/**
+ * Sequelize order type
+ */
+export type OrderType = [any, SortOrder];

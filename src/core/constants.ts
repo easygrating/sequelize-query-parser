@@ -3,5 +3,3 @@ export const MODEL_NOT_FOUND_ERROR: string =
 export const SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR: string =
   "The req.sequelizeQueryParser property was not found or is possibly undefined. Check that your parser middlewares are in the correct order, starting with buildModel()";
 export const TIMESTAMP_ATTRIBUTE: string = "createdAt";
-export const ORDER_SORT_ASC: string = "ASC";
-export const ORDER_SORT_DESC: string = "DESC";
