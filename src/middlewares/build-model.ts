@@ -9,7 +9,7 @@ import { MODEL_NOT_FOUND_ERROR } from "../constants";
  * HTTP methods for a given resource must be groupped under the same route param.
  * Ex: GET /users, POST /users, PUT /users/:id, DELETE /users/:id are groupped under `users` param
  * and will match with User (or user) model
- * 
+ *
  * If no model name is provided. The model that it's pruralized name match with the current route param
  * will be loaded into sequelizeQueryParser request property
  * @param db
@@ -40,6 +40,7 @@ export function buildModel(
     req.sequelizeQueryParser = {
       ...req.sequelizeQueryParser,
       model,
+      order: null,
     };
 
     next();

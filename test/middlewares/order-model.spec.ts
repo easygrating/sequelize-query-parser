@@ -2,7 +2,10 @@ import { Response } from "express";
 import { orderModel } from "./../../src/middlewares/order-model";
 import { col } from "sequelize";
 import { SequelizeQueryParserRequestInterface } from "../../src/interfaces";
-import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../../src/constants";
+import {
+  SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
+  TIMESTAMP_ATTRIBUTE,
+} from "../../src/constants";
 
 const db = require("./../../example/db");
 describe("Order Middleware", () => {
@@ -17,6 +20,7 @@ describe("Order Middleware", () => {
     req = {
       sequelizeQueryParser: {
         model: db["User"],
+        order: null,
       },
       query: {}, // Define query here
     };
@@ -36,7 +40,7 @@ describe("Order Middleware", () => {
     );
     expect(req.sequelizeQueryParser.order).toBeDefined();
     expect(req.sequelizeQueryParser.order).toEqual([
-      [col("createdAt"), "DESC"],
+      [col(TIMESTAMP_ATTRIBUTE), "DESC"],
     ]);
     expect(next).toHaveBeenCalledTimes(1);
   });

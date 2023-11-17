@@ -1,7 +1,12 @@
 import { NextFunction, Response } from "express";
 import { col } from "sequelize";
 import { SequelizeQueryParserRequestInterface } from "../interfaces";
-import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../constants";
+import {
+  SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
+  ORDER_SORT_ASC,
+  ORDER_SORT_DESC,
+  TIMESTAMP_ATTRIBUTE,
+} from "../constants";
 
 /**
  * Middleware that generates a Sequelize query order object based on the `req.query.order` value.
@@ -34,10 +39,10 @@ export function orderModel() {
 
     const model = req.sequelizeQueryParser.model;
     const primaryKey = model.primaryKeyAttribute;
-    const timestampKey = !!model.options.timestamps && "createdAt";
+    const timestampKey = !!model.options.timestamps && TIMESTAMP_ATTRIBUTE;
     const attributes = Object.keys(model.rawAttributes);
 
-    let order: [any, "ASC" | "DESC"][] = [
+    let order: [any, typeof ORDER_SORT_ASC | typeof ORDER_SORT_DESC][] = [
       [col(timestampKey ? timestampKey : primaryKey), "DESC"],
     ];
 
@@ -50,12 +55,15 @@ export function orderModel() {
           // Handle when the attribute doesn't exist in the model
           throw new Error(`Attribute '${column}' was not found in the model`);
         }
-        return [col(column), direction.toUpperCase()] as [any, "ASC" | "DESC"];
+        return [col(column), direction.toUpperCase()] as [
+          any,
+          typeof ORDER_SORT_ASC | typeof ORDER_SORT_DESC
+        ];
       });
       order = parsedOrder;
     }
 
-    req.sequelizeQueryParser["order"] = order;
+    req.sequelizeQueryParser.order = order;
 
     next();
   };
