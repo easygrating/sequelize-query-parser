@@ -3,6 +3,8 @@ import { orderModel } from "./../../src/middlewares/order-model";
 import { col } from "sequelize";
 import { SequelizeQueryParserRequestInterface } from "../../src/interfaces";
 import {
+  ORDER_SORT_ASC,
+  ORDER_SORT_DESC,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../../src/constants";
@@ -40,7 +42,7 @@ describe("Order Middleware", () => {
     );
     expect(req.sequelizeQueryParser.order).toBeDefined();
     expect(req.sequelizeQueryParser.order).toEqual([
-      [col(TIMESTAMP_ATTRIBUTE), "DESC"],
+      [col(TIMESTAMP_ATTRIBUTE), ORDER_SORT_DESC],
     ]);
     expect(next).toHaveBeenCalledTimes(1);
   });
@@ -54,7 +56,7 @@ describe("Order Middleware", () => {
       next
     );
     expect(req.sequelizeQueryParser.order).toBeDefined();
-    expect(req.sequelizeQueryParser.order).toEqual([[col("id"), "DESC"]]);
+    expect(req.sequelizeQueryParser.order).toEqual([[col("id"), ORDER_SORT_DESC]]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 
@@ -67,7 +69,7 @@ describe("Order Middleware", () => {
       next
     );
     expect(req.sequelizeQueryParser.order).toBeDefined();
-    expect(req.sequelizeQueryParser.order).toEqual([[col("name"), "ASC"]]);
+    expect(req.sequelizeQueryParser.order).toEqual([[col("name"), ORDER_SORT_ASC]]);
     expect(next).toHaveBeenCalledTimes(1);
   });
 

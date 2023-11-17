@@ -43,7 +43,7 @@ export function orderModel() {
     const attributes = Object.keys(model.rawAttributes);
 
     let order: [any, typeof ORDER_SORT_ASC | typeof ORDER_SORT_DESC][] = [
-      [col(timestampKey ? timestampKey : primaryKey), "DESC"],
+      [col(timestampKey ? timestampKey : primaryKey), ORDER_SORT_DESC],
     ];
 
     const rawOrder = req.query.order;
