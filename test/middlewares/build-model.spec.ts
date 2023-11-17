@@ -36,7 +36,7 @@ describe("Build Model Middleware", () => {
     expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Province");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Province");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
@@ -49,7 +49,7 @@ describe("Build Model Middleware", () => {
     expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Municipality");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Municipality");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 });

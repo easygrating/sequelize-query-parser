@@ -19,12 +19,17 @@ export interface SequelizeQueryParserDataInterface {
   /**
    * The Sequelize model property to be used in a route group.
    */
-  model: typeof Model;
+  model?: typeof Model;
 
   /**
    * The Sequelize order property to be used in a generic query of a list route.
    */
-  order: OrderType[] | null;
+  order?: OrderType[] | null;
+
+  /**
+   * Query parser attribute configuration
+   */
+  attributes?: AttributesConfig;
 
   /**
    * Additional properties for utility purposes.
@@ -37,3 +42,20 @@ export interface SequelizeQueryParserDataInterface {
  * Sequelize order type
  */
 export type OrderType = [any, SortOrder];
+/**
+ * Query parser attributes config interface
+ */
+export interface AttributesConfig {
+  include: string[];
+  exclude: string[];
+  associations: AssociationsAttributesConfig[];
+}
+
+/**
+ * Atributes config for associations
+ */
+export interface AssociationsAttributesConfig {
+  associationPath: string[];
+  exclude: boolean;
+  attribute: string;
+}
