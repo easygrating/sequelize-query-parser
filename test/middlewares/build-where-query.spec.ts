@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { buildWhere } from "../src";
-import { RequestQueryParserInterface } from "../src/interfaces/request-query-parser.interface";
+import { buildWhere } from "../../src";
+import { RequestQueryParserInterface } from "../../src/interfaces/request-query-parser.interface";
 import moment from "moment";
 
-const db = require('../example/db');
+const db = require('../../example/db');
 
 describe("Build where query middleware ", () => {
   it("should contain the where in the req with the params sended in the query from client", () => {

@@ -1,8 +1,8 @@
-import { Response, NextFunction } from 'express';
-import { pluralize, underscore } from 'inflection';
-import { Model } from 'sequelize';
-import { RequestQueryParserInterface } from '../interfaces/request-query-parser.interface';
-import { MODEL_NOT_FOUND_ERROR } from '../constants';
+import { Response, NextFunction } from "express";
+import { pluralize, underscore } from "inflection";
+import { Model } from "sequelize";
+import { RequestQueryParserInterface } from "../interfaces/request-query-parser.interface";
+import { MODEL_NOT_FOUND_ERROR } from "../core/constants";
 
 /**
  * Middleware to load a Sequelize model that will be used in crud operations for a given route.
