@@ -1,11 +1,11 @@
 import { NextFunction, Response } from "express";
-import { RequestQueryParserInterface } from "../interfaces/request-query-parser.interface";
 import moment from "moment";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 
-export function buildWhere(req: RequestQueryParserInterface, res: Response, next: NextFunction) {
+export function buildWhere(req: SequelizeQueryParserRequestInterface, res: Response, next: NextFunction) {
   const where: any = req.query?.where || {};
-  if (req.queryParser) {
-    const entityFields: any = req.queryParser.model.rawAttributes;
+  if (req.sequelizeQueryParser && req.sequelizeQueryParser.model) {
+    const entityFields: any = req.sequelizeQueryParser.model.rawAttributes;
     for (const field in entityFields) {
       if (field in req.query) {
         let val: any = req.query[field];
@@ -31,8 +31,8 @@ export function buildWhere(req: RequestQueryParserInterface, res: Response, next
         where[field] = val;
       }
     }
-    req.queryParser = {
-      ...req.queryParser,
+    req.sequelizeQueryParser = {
+      ...req.sequelizeQueryParser,
       where: where
     }
   }

@@ -22,6 +22,11 @@ export interface SequelizeQueryParserDataInterface {
   attributes?: AttributesConfig;
 
   /**
+   * Configuration for the where query to the database
+   */
+  where?: any;
+
+  /**
    * Additional properties for utility purposes.
    * @deprecated Future releases will replace this with more specific utility properties.
    */

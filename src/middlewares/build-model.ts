@@ -1,8 +1,8 @@
 import { Response, NextFunction } from "express";
 import { pluralize, underscore } from "inflection";
 import { Model } from "sequelize";
-import { RequestQueryParserInterface } from "../interfaces/request-query-parser.interface";
 import { MODEL_NOT_FOUND_ERROR } from "../core/constants";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 
 /**
  * Middleware to load a Sequelize model that will be used in crud operations for a given route.
@@ -21,7 +21,7 @@ export function buildModel(
   modelName?: string
 ) {
   return (
-    req: RequestQueryParserInterface,
+    req: SequelizeQueryParserRequestInterface,
     res: Response,
     next: NextFunction
   ) => {
@@ -37,8 +37,8 @@ export function buildModel(
     if (!model) {
       throw new Error(MODEL_NOT_FOUND_ERROR);
     }
-    req.queryParser = {
-      ...req.queryParser,
+    req.sequelizeQueryParser = {
+      ...req.sequelizeQueryParser,
       model,
     };
 

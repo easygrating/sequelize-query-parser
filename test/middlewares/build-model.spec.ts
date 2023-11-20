@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { buildModel } from "../../src/index";
 import { MODEL_NOT_FOUND_ERROR } from "../../src/core/constants";
-import { RequestQueryParserInterface } from "../../src/interfaces/request-query-parser.interface";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 
 
 const db = require("../../example/db");
@@ -30,27 +30,27 @@ describe("Build Model Middleware", () => {
 
   it("must load Province model into queryParser request object matching with route param", () => {
     const middleware = buildModel(db);
-    const request: Partial<RequestQueryParserInterface> = {
+    const request: Partial<SequelizeQueryParserRequestInterface> = {
       params: { model: "provinces" },
     };
     middleware(request as any, {} as Response, fakeNext);
     expect(request).toHaveProperty("queryParser");
-    expect(request.queryParser).toHaveProperty("model");
-    expect(request.queryParser?.model).toHaveProperty("name");
-    expect(request.queryParser?.model.name).toEqual("Province");
+    expect(request.sequelizeQueryParser).toHaveProperty("model");
+    expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Province");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
   it("must load Province model into queryParser request object matching with a given model name", () => {
     const middleware = buildModel(db, "Municipality");
-    const request: Partial<RequestQueryParserInterface> = {
+    const request: Partial<SequelizeQueryParserRequestInterface> = {
       params: {},
     };
     middleware(request as any, {} as Response, fakeNext);
     expect(request).toHaveProperty("queryParser");
-    expect(request.queryParser).toHaveProperty("model");
-    expect(request.queryParser?.model).toHaveProperty("name");
-    expect(request.queryParser?.model.name).toEqual("Municipality");
+    expect(request.sequelizeQueryParser).toHaveProperty("model");
+    expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Municipality");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 });
