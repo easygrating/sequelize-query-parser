@@ -34,7 +34,7 @@ describe("Build Model Middleware", () => {
       params: { model: "provinces" },
     };
     middleware(request as any, {} as Response, fakeNext);
-    expect(request).toHaveProperty("queryParser");
+    expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
     expect(request.sequelizeQueryParser?.model?.name).toEqual("Province");
@@ -47,7 +47,7 @@ describe("Build Model Middleware", () => {
       params: {},
     };
     middleware(request as any, {} as Response, fakeNext);
-    expect(request).toHaveProperty("queryParser");
+    expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
     expect(request.sequelizeQueryParser?.model?.name).toEqual("Municipality");

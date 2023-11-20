@@ -19,7 +19,7 @@ describe("Build where query middleware ", () => {
     }
     const fakeNext = jest.fn();
     buildWhere(req as any, {} as Response, fakeNext);
-    expect(req).toHaveProperty("queryParser");
+    expect(req).toHaveProperty("sequelizeQueryParser");
     expect(req.sequelizeQueryParser).toHaveProperty("where");
     expect(req.sequelizeQueryParser?.where).toHaveProperty("name");
     expect(req.sequelizeQueryParser?.where?.name).toEqual("Sofia");
@@ -39,7 +39,7 @@ describe("Build where query middleware ", () => {
     }
     const fakeNext = jest.fn();
     buildWhere(req as any, {} as Response, fakeNext);
-    expect(req).toHaveProperty("queryParser");
+    expect(req).toHaveProperty("sequelizeQueryParser");
     expect(req.sequelizeQueryParser).toHaveProperty("where");
     expect(req.sequelizeQueryParser?.where?.order).toBeNull();
     expect(req.sequelizeQueryParser?.where?.isValid).toBeNull();

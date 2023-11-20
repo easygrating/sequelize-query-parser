@@ -85,7 +85,7 @@ describe("Order Middleware", () => {
         res as Response,
         next
       );
-    }).toThrow(`Attribute 'invalidAttribute' was not found in the model`);
+    }).toThrow("Attribute 'invalidAttribute' was not found in the model");
     expect(next).not.toHaveBeenCalled();
   });
 
