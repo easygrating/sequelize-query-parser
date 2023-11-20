@@ -1,9 +1,6 @@
 import { NextFunction, Response } from "express";
 import { col } from "sequelize";
-import {
-  OrderType,
-  SequelizeQueryParserRequestInterface,
-} from "../core/interfaces";
+import { OrderType } from "../core/types";
 import {
   ATTRIBUTE_NOT_FOUND_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
@@ -11,6 +8,7 @@ import {
 } from "../core/constants";
 import { SortOrder } from "../core/enums";
 import { parseStringWithParams } from "../utils";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 
 /**
  * Middleware that generates a Sequelize query order object based on the `req.query.order` value.

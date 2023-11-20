@@ -1,10 +1,8 @@
 import { NextFunction, Response } from "express";
-import {
-  AssociationsAttributesConfig,
-  SequelizeQueryParserRequestInterface,
-} from "../../src/core/interfaces";
 import { buildAttributes } from "../../src/middlewares/build-attribute";
 import { MODEL_NOT_CONFIGURED_ERROR } from "../../src/core/constants";
+import { AssociationsAttributesConfig } from "../../src/core/interfaces/associations-attributes-config.interface";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 const db = require("../../example/db/index");
 
 describe("Build Attribute Middleware", () => {
