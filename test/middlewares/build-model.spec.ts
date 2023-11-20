@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { buildModel } from "../../src/index";
 import { MODEL_NOT_FOUND_ERROR } from "../../src/core/constants";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 
 const db = require("./../../example/db");
 describe("Build Model Middleware", () => {
@@ -36,7 +36,7 @@ describe("Build Model Middleware", () => {
     expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Province");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Province");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
@@ -49,7 +49,7 @@ describe("Build Model Middleware", () => {
     expect(request).toHaveProperty("sequelizeQueryParser");
     expect(request.sequelizeQueryParser).toHaveProperty("model");
     expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Municipality");
+    expect(request.sequelizeQueryParser?.model?.name).toEqual("Municipality");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 });

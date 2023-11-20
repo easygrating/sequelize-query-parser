@@ -1,8 +1,8 @@
 import { Response, NextFunction } from "express";
 import { pluralize, underscore } from "inflection";
 import { Model } from "sequelize";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
 import { MODEL_NOT_FOUND_ERROR } from "../core/constants";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 
 /**
  * Middleware to load a Sequelize model that will be used in crud operations for a given route.
@@ -13,7 +13,8 @@ import { MODEL_NOT_FOUND_ERROR } from "../core/constants";
  * If no model name is provided. The model that it's pruralized name match with the current route param
  * will be loaded into sequelizeQueryParser request property
  * @param db
- * @param modelName Optional. Model name to match with
+ * @param {string} modelName Optional. Model name to match with
+ * @throws {Error} Throws an error if a model is not found for given parameters.
  * @returns express middleware that will load a sequelize model for a given nodelName or a route model parameter
  */
 export function buildModel(

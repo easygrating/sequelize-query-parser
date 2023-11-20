@@ -1,11 +1,14 @@
 import { NextFunction, Response } from "express";
 import { col } from "sequelize";
-import { OrderType, SequelizeQueryParserRequestInterface } from "../core/interfaces";
+import { OrderType } from "../core/types";
 import {
+  ATTRIBUTE_NOT_FOUND_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../core/constants";
 import { SortOrder } from "../core/enums";
+import { parseStringWithParams } from "../utils";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 
 /**
  * Middleware that generates a Sequelize query order object based on the `req.query.order` value.
@@ -55,7 +58,9 @@ export function orderModel() {
         // Check if the specified column exists in the model's attributes
         if (!attributes.includes(column)) {
           // Handle when the attribute doesn't exist in the model
-          throw new Error(`Attribute '${column}' was not found in the model`);
+          throw new Error(
+            parseStringWithParams(ATTRIBUTE_NOT_FOUND_ERROR, column)
+          );
         }
         return [col(column), direction.toUpperCase() as SortOrder];
       });
