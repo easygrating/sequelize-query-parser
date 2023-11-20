@@ -1,12 +1,12 @@
 import { Response } from "express";
 import { orderModel } from "./../../src/middlewares/order-model";
 import { col } from "sequelize";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
 import {
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../../src/core/constants";
 import { SortOrder } from "../../src/core/enums";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 
 const db = require("./../../example/db");
 describe("Order Middleware", () => {
