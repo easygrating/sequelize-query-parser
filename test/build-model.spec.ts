@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { buildModel } from "../src/index";
 import { MODEL_NOT_FOUND_ERROR } from "../src/constants";
-import { SequelizeQueryParserRequestInterface } from "../src/interfaces";
+import { RequestQueryParserInterface } from "../src/interfaces/request-query-parser.interface";
 
 const db = require("../example/db");
 describe("Build Model Middleware", () => {
@@ -23,31 +23,31 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(0);
   });
 
-  it("Must load Province model into sequelizeQueryParser request object matching with route param", () => {
+  it("Must load Province model into queryParser request object matching with route param", () => {
     const middleware = buildModel(db);
     const fakeNext = jest.fn();
-    const request: Partial<SequelizeQueryParserRequestInterface> = {
+    const request: Partial<RequestQueryParserInterface> = {
       params: { model: "provinces" },
     };
     middleware(request as any, {} as Response, fakeNext);
-    expect(request).toHaveProperty("sequelizeQueryParser");
-    expect(request.sequelizeQueryParser).toHaveProperty("model");
-    expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Province");
+    expect(request).toHaveProperty("queryParser");
+    expect(request.queryParser).toHaveProperty("model");
+    expect(request.queryParser?.model).toHaveProperty("name");
+    expect(request.queryParser?.model.name).toEqual("Province");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
-  it("Must load Province model into sequelizeQueryParser request object matching with a given model name", () => {
+  it("Must load Province model into queryParser request object matching with a given model name", () => {
     const middleware = buildModel(db, "Municipality");
     const fakeNext = jest.fn();
-    const request: Partial<SequelizeQueryParserRequestInterface> = {
+    const request: Partial<RequestQueryParserInterface> = {
       params: {},
     };
     middleware(request as any, {} as Response, fakeNext);
-    expect(request).toHaveProperty("sequelizeQueryParser");
-    expect(request.sequelizeQueryParser).toHaveProperty("model");
-    expect(request.sequelizeQueryParser?.model).toHaveProperty("name");
-    expect(request.sequelizeQueryParser?.model.name).toEqual("Municipality");
+    expect(request).toHaveProperty("queryParser");
+    expect(request.queryParser).toHaveProperty("model");
+    expect(request.queryParser?.model).toHaveProperty("name");
+    expect(request.queryParser?.model.name).toEqual("Municipality");
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 });
