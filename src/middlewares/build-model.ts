@@ -14,6 +14,7 @@ import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequeli
  * will be loaded into sequelizeQueryParser request property
  * @param db
  * @param modelName Optional. Model name to match with
+ * @throws {Error} Throws an error if a model is not found for given parameters.
  * @returns express middleware that will load a sequelize model for a given nodelName or a route model parameter
  */
 export function buildModel(

@@ -1,17 +1,15 @@
 import { Response, NextFunction } from "express";
 import { MODEL_NOT_CONFIGURED_ERROR } from "../core/constants";
 import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
+
 /**
  * Middleware to parse an HTTP query and build an attributes configuration object to use in a selection query
  * with sequelize.
  *
- * 
  * Selection can be performed in the following format
- * 
  * `
  * /?attributes=name:asc,code:asc,not:id,Municipality.code
  * `
- * 
  * a comma separated values of type propertyName:sortDirection or associationPath.propertyName:sortDirection
  *
  * @param {SequelizeQueryParserRequestInterface} req express request object with an additional sequelizeQueryParser property
