@@ -25,7 +25,7 @@ describe("Build where query middleware ", () => {
       sequelizeQueryParser: { model }
     }
     buildWhere(req as any, {} as Response, fakeNext);
-    expect(req).toHaveProperty("wrong");
+    expect(req).toHaveProperty("sequelizeQueryParser");
     expect(req.sequelizeQueryParser).toHaveProperty("where");
     expect(req.sequelizeQueryParser?.where).toHaveProperty("name");
     expect(req.sequelizeQueryParser?.where?.name).toEqual("Sofia");
