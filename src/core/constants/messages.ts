@@ -7,3 +7,5 @@ export const MODEL_NOT_CONFIGURED_ERROR =
   "To use 'buildAttributes' you first must configure a model using 'buildModel' middleware";
 export const ATTRIBUTE_NOT_FOUND_ERROR =
   "Attribute '{1}' was not found in the model";
+export const INVALID_NUMBER = "The param send is not a valid number"
+export const INVALID_DATE = "The param send is not a valid date"
