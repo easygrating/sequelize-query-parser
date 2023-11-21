@@ -1,6 +1,6 @@
 import { Model } from "sequelize";
-import { OrderType } from "../types";
 import { AttributesConfig } from "./attributes-config.interface";
+import { OrderType, WhereType } from "../types";
 
 /**
  * Data structure to contain Sequelize-related properties within the Express Request object.
@@ -24,7 +24,7 @@ export interface SequelizeQueryParserDataInterface {
   /**
    * Configuration for the where query to the database
    */
-  where?: any;
+  where?: WhereType;
 
   /**
    * Additional properties for utility purposes.
