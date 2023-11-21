@@ -18,6 +18,18 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.STRING(2),
 			allowNull: false,
 		},
+		order: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
+		isValid: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
+		fundation_date: {
+			type: DataTypes.DATEONLY,
+			allowNull: false,
+		},
 		latitude: {
 			type: DataTypes.STRING,
 			allowNull: true,

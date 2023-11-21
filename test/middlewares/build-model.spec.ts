@@ -3,7 +3,8 @@ import { buildModel } from "../../src/index";
 import { MODEL_NOT_FOUND_ERROR } from "../../src/core/constants";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 
-const db = require("./../../example/db");
+
+const db = require("../../example/db");
 describe("Build Model Middleware", () => {
   let fakeNext: jest.Mock;
 
@@ -27,7 +28,7 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(0);
   });
 
-  it("must load Province model into sequelizeQueryParser request object matching with route param", () => {
+  it("must load Province model into queryParser request object matching with route param", () => {
     const middleware = buildModel(db);
     const request: Partial<SequelizeQueryParserRequestInterface> = {
       params: { model: "provinces" },
@@ -40,7 +41,7 @@ describe("Build Model Middleware", () => {
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
-  it("must load Province model into sequelizeQueryParser request object matching with a given model name", () => {
+  it("must load Province model into queryParser request object matching with a given model name", () => {
     const middleware = buildModel(db, "Municipality");
     const request: Partial<SequelizeQueryParserRequestInterface> = {
       params: {},

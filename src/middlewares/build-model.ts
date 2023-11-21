@@ -13,7 +13,7 @@ import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequeli
  * If no model name is provided. The model that it's pruralized name match with the current route param
  * will be loaded into sequelizeQueryParser request property
  * @param db
- * @param {string} modelName Optional. Model name to match with
+ * @param modelName Optional. Model name to match with
  * @throws {Error} Throws an error if a model is not found for given parameters.
  * @returns express middleware that will load a sequelize model for a given nodelName or a route model parameter
  */
@@ -21,13 +21,13 @@ export function buildModel(
   db: { [key: string]: typeof Model },
   modelName?: string
 ) {
-  return function (
+  return (
     req: SequelizeQueryParserRequestInterface,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     const modelUrl = req.params.model;
-    let model = Object.values(db).find((item) => {
+    const model = Object.values(db).find((item) => {
       return (
         item.prototype instanceof Model &&
         (item.name === modelName ||
@@ -41,7 +41,6 @@ export function buildModel(
     req.sequelizeQueryParser = {
       ...req.sequelizeQueryParser,
       model,
-      order: null,
     };
 
     next();
