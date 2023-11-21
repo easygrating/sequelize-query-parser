@@ -30,7 +30,7 @@ import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequeli
  *
  * @returns {Function} Express middleware function.
  */
-export function orderModel() {
+export function buildOrder() {
   return function (
     req: SequelizeQueryParserRequestInterface,
     res: Response,

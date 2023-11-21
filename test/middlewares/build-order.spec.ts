@@ -1,15 +1,17 @@
 import { Response } from "express";
-import { orderModel } from "./../../src/middlewares/order-model";
+import { buildOrder } from "../../src/middlewares/build-order";
 import { col } from "sequelize";
 import {
+  ATTRIBUTE_NOT_FOUND_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../../src/core/constants";
 import { SortOrder } from "../../src/core/enums";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
+import { parseStringWithParams } from "../../src/utils";
 
 const db = require("./../../example/db");
-describe("Order Middleware", () => {
+describe("Build Order Middleware", () => {
   let req: Partial<SequelizeQueryParserRequestInterface> & {
     sequelizeQueryParser: any;
     query: any;
@@ -33,7 +35,7 @@ describe("Order Middleware", () => {
   });
 
   it("should set default order when req.query.order is undefined", () => {
-    const middleware = orderModel();
+    const middleware = buildOrder();
     middleware(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
@@ -48,7 +50,7 @@ describe("Order Middleware", () => {
 
   it("should set order by id when req.query.order is undefined and timestamps are disabled", () => {
     req.sequelizeQueryParser.model = db["Province"];
-    const middleware = orderModel();
+    const middleware = buildOrder();
     middleware(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
@@ -63,7 +65,7 @@ describe("Order Middleware", () => {
 
   it("should return a valid order when req.query.order is defined", () => {
     req.query.order = "name:asc";
-    const middleware = orderModel();
+    const middleware = buildOrder();
     middleware(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
@@ -78,20 +80,22 @@ describe("Order Middleware", () => {
 
   it("should throw an error when attribute specified in req.query.order does not exist in the model", () => {
     req.query.order = "invalidAttribute:asc";
-    const middleware = orderModel();
+    const middleware = buildOrder();
     expect(() => {
       middleware(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
       );
-    }).toThrow(`Attribute 'invalidAttribute' was not found in the model`);
+    }).toThrow(
+      parseStringWithParams(ATTRIBUTE_NOT_FOUND_ERROR, "invalidAttribute")
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
   it("should throw an error when req.sequelizeQueryParser or req.sequelizeQueryParser.model is not defined", () => {
     req.sequelizeQueryParser = undefined;
-    const middleware = orderModel();
+    const middleware = buildOrder();
     expect(() => {
       middleware(
         req as SequelizeQueryParserRequestInterface,

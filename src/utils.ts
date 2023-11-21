@@ -19,3 +19,26 @@ export function parseStringWithParams(
   }
   return value;
 }
+
+/**
+ * Checks if value is a string null
+ * @param {string} value
+ * @returns {boolean}
+ */
+export function isNullValue(value: string): boolean {
+  const lowerValue = value.trim().toLowerCase();
+  return lowerValue === "null" || lowerValue === "undefined";
+}
+
+/**
+ * Checks if value is a string true or false
+ * @param {string} value
+ * @returns {boolean}
+ */
+export function isBooleanValue(value: string): boolean {
+  return (
+    typeof value === "string" &&
+    (value.trim().toLowerCase() === "false" ||
+      value.trim().toLowerCase() === "true")
+  );
+}
