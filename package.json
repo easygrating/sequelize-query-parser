@@ -40,6 +40,7 @@
     "@types/inflection": "^1.13.2",
     "@types/jest": "^29.5.8",
     "@types/lodash": "^4.14.201",
+    "@types/luxon": "^3.3.5",
     "@types/node": "^20.9.0",
     "@types/sequelize": "^4.28.18",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
@@ -54,6 +55,6 @@
   "dependencies": {
     "inflection": "^3.0.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4"
+    "luxon": "^3.4.4"
   }
 }
