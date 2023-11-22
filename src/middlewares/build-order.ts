@@ -3,6 +3,7 @@ import { col } from "sequelize";
 import { OrderType } from "../core/types";
 import {
   ATTRIBUTE_NOT_FOUND_ERROR,
+  MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../core/constants";
@@ -36,8 +37,9 @@ export function buildOrder() {
     res: Response,
     next: NextFunction
   ) {
-    if (!req.sequelizeQueryParser || !req.sequelizeQueryParser.model)
-      throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+    // Check if necessary Sequelize query parser data exists
+    if (!req.sequelizeQueryParser) throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+    if (!req.sequelizeQueryParser.model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
 
     const model = req.sequelizeQueryParser.model;
     const primaryKey = model.primaryKeyAttribute;

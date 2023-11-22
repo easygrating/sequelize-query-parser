@@ -3,6 +3,7 @@ import { buildOrder } from "../../src/middlewares/build-order";
 import { col } from "sequelize";
 import {
   ATTRIBUTE_NOT_FOUND_ERROR,
+  MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   TIMESTAMP_ATTRIBUTE,
 } from "../../src/core/constants";
@@ -93,8 +94,8 @@ describe("Build Order Middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("should throw an error when req.sequelizeQueryParser or req.sequelizeQueryParser.model is not defined", () => {
-    req.sequelizeQueryParser = undefined;
+  it("should throw an error when req.sequelizeQueryParser is not defined", () => {
+    delete req.sequelizeQueryParser;
     const middleware = buildOrder();
     expect(() => {
       middleware(
@@ -103,6 +104,19 @@ describe("Build Order Middleware", () => {
         next
       );
     }).toThrow(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("should throw an error when req.sequelizeQueryParser.model is not defined", () => {
+    delete req.sequelizeQueryParser.model;
+    const middleware = buildOrder();
+    expect(() => {
+      middleware(
+        req as SequelizeQueryParserRequestInterface,
+        res as Response,
+        next
+      );
+    }).toThrow(MODEL_NOT_CONFIGURED_ERROR);
     expect(next).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { MODEL_NOT_CONFIGURED_ERROR } from "../core/constants";
+import { MODEL_NOT_CONFIGURED_ERROR, SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../core/constants";
 import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 /**
  * Middleware to parse an HTTP query and build an attributes configuration object to use in a selection query
@@ -24,6 +24,9 @@ export function buildAttributes(
   res: Response,
   next: NextFunction
 ) {
+  if (!req.sequelizeQueryParser) throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+  if (!req.sequelizeQueryParser.model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
+
   if (!req.query.attributes) return next();
 
   let rawAttributes: string[] = [];
@@ -34,9 +37,6 @@ export function buildAttributes(
   } else {
     return next();
   }
-
-  const model = req.sequelizeQueryParser?.model;
-  if (!model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
 
   const include: string[] = [];
   const exclude: string[] = [];
