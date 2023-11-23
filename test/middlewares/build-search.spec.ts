@@ -1,15 +1,17 @@
 import { Response } from "express";
+import { buildSearch } from "../../src/middlewares/build-search";
 import {
   INVALID_SEARCH_ATTRIBUTES_ERROR,
   INVALID_SEARCH_VALUE_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
+  WHERE_CLAUSE_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-import { buildSearch } from "../../src/middlewares/build-search";
 import { parseStringWithParams } from "../../src/utils";
-import { Op, Sequelize } from "sequelize";
+import { Op } from "sequelize";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
 describe("Build Search Middleware", () => {
   let req: Partial<SequelizeQueryParserRequestInterface> & {
@@ -23,6 +25,7 @@ describe("Build Search Middleware", () => {
     req = {
       sequelizeQueryParser: {
         model: db["User"],
+        where: {},
         order: null,
       },
       query: { search: "foo" }, // Define query here
@@ -117,7 +120,7 @@ describe("Build Search Middleware", () => {
     expect(next).not.toHaveBeenCalled();
   });
 
-  it("should throw an error when a searchAttribute does not exist in the model", () => {
+  it("should throw an error when a searchAttributes item does not exist in the model", () => {
     req.query.searchAttributes = "name,description";
     const middleware = buildSearch();
     expect(() => {
@@ -153,6 +156,19 @@ describe("Build Search Middleware", () => {
         next
       );
     }).toThrow(MODEL_NOT_CONFIGURED_ERROR);
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("should throw an error when req.sequelizeQueryParser.where is not defined", () => {
+    delete req.sequelizeQueryParser.where;
+    const middleware = buildSearch();
+    expect(() => {
+      middleware(
+        req as SequelizeQueryParserRequestInterface,
+        res as Response,
+        next
+      );
+    }).toThrow(WHERE_CLAUSE_NOT_FOUND_ERROR);
     expect(next).not.toHaveBeenCalled();
   });
 });

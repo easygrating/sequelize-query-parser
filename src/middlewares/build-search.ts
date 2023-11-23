@@ -6,8 +6,12 @@ import {
   INVALID_SEARCH_VALUE_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
+  WHERE_CLAUSE_NOT_FOUND_ERROR,
 } from "../core/constants";
 import { Op, Sequelize } from "sequelize";
+import {
+  WherePrimitives,
+} from "../core/types";
 
 /**
  * Middleware function to build a search query based on provided parameters.
@@ -19,7 +23,7 @@ import { Op, Sequelize } from "sequelize";
  *
  * Note 1: This middleware relies on the preceding use of the `buildWhere()` middleware located at `./build-where.ts`
  * to access the correct value from `req.sequelizeQueryParser.where`.
- * 
+ *
  * Note 2: This middleware relies on the preceding use of the `buildIncludes()` middleware located at `./build-includes.ts`
  * to access the correct value from `req.sequelizeQueryParser.includes`.
  *
@@ -36,21 +40,29 @@ export function buildSearch() {
     next: NextFunction
   ) {
     // Check if necessary Sequelize query parser data exists
-    if (!req.sequelizeQueryParser) throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
-    if (!req.sequelizeQueryParser.model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
+    if (!req.sequelizeQueryParser)
+      throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+    if (!req.sequelizeQueryParser.model)
+      throw new Error(MODEL_NOT_CONFIGURED_ERROR);
+    if (!req.sequelizeQueryParser.where)
+      throw new Error(WHERE_CLAUSE_NOT_FOUND_ERROR);
+
+    // Get model and attributes
+    const model = req.sequelizeQueryParser.model;
+    const attributes = model.rawAttributes;
+
+    // Extracting sequelize-query-parser parameters
+    const where = req.sequelizeQueryParser.where;
+    const includes =
+      (req.sequelizeQueryParser.includes as string)?.split(",") || []; // TODO: update when includes middleware is defined
 
     // Extracting query parameters
     const search = req.query.search as string;
-    let searchAttributes = (req.query.searchAttributes as string)?.split(",") || null;
-
-    // Extracting sequelize-query-parser parameters
-    let where = req.sequelizeQueryParser.where || {};
-    let includes = (req.sequelizeQueryParser.includes as string)?.split(",") || []; // TODO: update when includes middleware is defined    
+    let searchAttributes =
+      (req.query.searchAttributes as string)?.split(",") || [];
 
     // If no search term provided, proceed to the next middleware
-    if (!search) {
-      return next();
-    }
+    if (!search) return next();
 
     // Validate the search term
     if (!!isBooleanValue(search) || isNullValue(search)) {
@@ -58,10 +70,6 @@ export function buildSearch() {
         parseStringWithParams(INVALID_SEARCH_VALUE_ERROR, search)
       );
     }
-
-    const model = req.sequelizeQueryParser.model;
-
-    const attributes = model.rawAttributes;
 
     // Get attributes that are of type string or text
     const stringOrTextAttributes = Object.keys(attributes).filter(
@@ -87,20 +95,25 @@ export function buildSearch() {
     }
 
     // Prepare the 'where' condition for the search
-    if (!where[Op.or]) {
-      where[Op.or] = [];
-    }
+    if (!where[Op.or]) where[Op.or] = [];
 
     // Get database dialect for model
     const dialect = (model.sequelize as Sequelize).getDialect();
 
     // Construct the search query for each specified attribute with case-insensitive search
+    let searchCondition: WherePrimitives;
+    // Switch dialect (no ternary, anticipating future changes to operator support)
+    switch (dialect) {
+      case "postgres":
+        searchCondition = { [Op.iLike]: `%${search}%` };
+        break;
+      default:
+        searchCondition = { [Op.like]: `%${search}%` };
+        break;
+    }
     searchAttributes.forEach((item) => {
-      const searchCondition =
-        dialect === "postgres"
-          ? { [Op.iLike]: `%${search}%` }
-          : { [Op.like]: `%${search}%` };
-      where[Op.or].push({ [item]: searchCondition });
+      const newItem: WherePrimitives = { [item]: searchCondition };
+      (where[Op.or] as Array<WherePrimitives>).push(newItem);
     });
 
     // Add model association nested attributes to search
@@ -125,11 +138,8 @@ export function buildSearch() {
 
         // Construct the search query for each specified attribute with case-insensitive search
         associatedStringOrTextAttributes.forEach((item) => {
-          const searchCondition =
-            dialect === "postgres"
-              ? { [Op.iLike]: `%${search}%` }
-              : { [Op.like]: `%${search}%` };
-          where[Op.or].push({ [`${association}.${item}`]: searchCondition });
+          const newItem = { [`${association}.${item}`]: searchCondition };
+          (where[Op.or] as Array<WherePrimitives>).push(newItem);
         });
       }
     });

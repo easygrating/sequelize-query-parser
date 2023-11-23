@@ -11,3 +11,7 @@ export const INVALID_SEARCH_VALUE_ERROR =
   "Value '{1}' is not valid to perform a string search";
 export const INVALID_SEARCH_ATTRIBUTES_ERROR =
   "Invalid search attribute(s) or attribute type(s)";
+export const INVALID_NUMBER = "The param send is not a valid number";
+export const INVALID_DATE = "The param send is not a valid date";
+export const WHERE_CLAUSE_NOT_FOUND_ERROR =
+  "To use 'buildSearch' you first must configure a 'where' clause using 'buildWhere' middleware";

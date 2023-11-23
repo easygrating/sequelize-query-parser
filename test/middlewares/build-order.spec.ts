@@ -11,6 +11,7 @@ import { SortOrder } from "../../src/core/enums";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 import { parseStringWithParams } from "../../src/utils";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
 describe("Build Order Middleware", () => {
   let req: Partial<SequelizeQueryParserRequestInterface> & {

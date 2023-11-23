@@ -1,13 +1,14 @@
 import { NextFunction, Response } from "express";
-import { buildAttributes } from "../../src/middlewares/build-attribute";
+import { buildAttributes } from "../../src/middlewares/build-attributes";
 import {
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
 import { AssociationsAttributesConfig } from "../../src/core/interfaces/associations-attributes-config.interface";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-const db = require("../../example/db/index");
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const db = require("./../../example/db");
 describe("Build Attribute Middleware", () => {
   let fakeNext: NextFunction;
   let req: Partial<SequelizeQueryParserRequestInterface> & {
