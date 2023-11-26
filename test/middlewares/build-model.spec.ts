@@ -1,10 +1,11 @@
 import { Response } from "express";
-import { buildModel } from "../../src/index";
+import { buildModel } from "../../src/middlewares/build-model";
 import { MODEL_NOT_FOUND_ERROR } from "../../src/core/constants";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const db = require("./../../example/db");
 
-const db = require("../../example/db");
 describe("Build Model Middleware", () => {
   let fakeNext: jest.Mock;
 
@@ -12,7 +13,7 @@ describe("Build Model Middleware", () => {
     fakeNext = jest.fn();
   });
 
-  it("must throw an error if model param is not associate with an existing model and not call next", () => {
+  it("must throw an error if model param is not associated with an existing model and not call next", () => {
     const middleware = buildModel(db);
     expect(() =>
       middleware({ params: { model: "pet" } } as any, {} as Response, fakeNext)
