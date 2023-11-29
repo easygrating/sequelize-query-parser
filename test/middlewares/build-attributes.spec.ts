@@ -9,6 +9,7 @@ import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
+
 describe("Build Attribute Middleware", () => {
   let fakeNext: NextFunction;
   let req: Partial<SequelizeQueryParserRequestInterface> & {
@@ -21,7 +22,6 @@ describe("Build Attribute Middleware", () => {
     req = {
       sequelizeQueryParser: {
         model: db["Province"],
-        order: null,
       },
       query: {
         attributes: "name,code",

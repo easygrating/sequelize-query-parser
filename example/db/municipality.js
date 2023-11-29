@@ -4,7 +4,7 @@ const {
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
 	class Municipality extends Model {
-		static associate (models) {
+		static associate(models) {
 			Municipality.belongsTo(models.Province, {
 				onDelete: 'CASCADE',
 				foreignKey: 'province_id'

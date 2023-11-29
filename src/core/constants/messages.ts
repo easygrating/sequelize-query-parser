@@ -7,8 +7,6 @@ export const MODEL_NOT_CONFIGURED_ERROR =
   "To use 'buildAttributes' you first must configure a model using 'buildModel' middleware";
 export const ATTRIBUTE_NOT_FOUND_ERROR =
   "Attribute '{1}' was not found in the model";
-export const INVALID_SEARCH_VALUE_ERROR =
-  "Value '{1}' is not valid to perform a string search";
 export const INVALID_SEARCH_ATTRIBUTES_ERROR =
   "Invalid search attribute(s) or attribute type(s)";
 export const INVALID_NUMBER = "The param send is not a valid number";
