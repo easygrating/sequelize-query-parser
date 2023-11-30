@@ -22,6 +22,7 @@ export function parseStringWithParams(
 
 /**
  * Checks if value is a string null
+ *
  * @param {string} value
  * @returns {boolean}
  */
@@ -32,6 +33,7 @@ export function isNullValue(value: string): boolean {
 
 /**
  * Checks if value is a string true or false
+ *
  * @param {string} value
  * @returns {boolean}
  */
@@ -41,4 +43,23 @@ export function isBooleanValue(value: string): boolean {
     (value.trim().toLowerCase() === "false" ||
       value.trim().toLowerCase() === "true")
   );
+}
+
+/**
+ * Converts a string to a boolean value.
+ *
+ * @param {string} value - The string to be converted.
+ * @return {boolean|null} - The converted boolean value if the string is recognized as representing a boolean, otherwise null.
+ */
+export function stringToBoolean(value: string) {
+  let result = null;
+  const sanitized = value.toLowerCase().trim()
+  const thrutyValues = ["true", "t", "1"];
+  const falsyValues = ["false", "f", "0"];
+  if (thrutyValues.includes(sanitized)) {
+    result = true
+  } else if (falsyValues.includes(sanitized)) {
+    result = false;
+  }
+  return result;
 }

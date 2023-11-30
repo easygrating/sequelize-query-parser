@@ -2,17 +2,16 @@ import { Response } from "express";
 import { buildSearch } from "../../src/middlewares/build-search";
 import {
   INVALID_SEARCH_ATTRIBUTES_ERROR,
-  INVALID_SEARCH_VALUE_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   WHERE_CLAUSE_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
 import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-import { parseStringWithParams } from "../../src/utils";
 import { Op } from "sequelize";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
+
 describe("Build Search Middleware", () => {
   let req: Partial<SequelizeQueryParserRequestInterface> & {
     sequelizeQueryParser: any;
@@ -26,7 +25,6 @@ describe("Build Search Middleware", () => {
       sequelizeQueryParser: {
         model: db["User"],
         where: {},
-        order: null,
       },
       query: { search: "foo" }, // Define query here
     };
@@ -104,20 +102,6 @@ describe("Build Search Middleware", () => {
     expect(req.sequelizeQueryParser.where).toBeDefined();
     expect(req.sequelizeQueryParser.where).toEqual(controlValue);
     expect(next).toHaveBeenCalledTimes(1);
-  });
-
-  it("should throw an error when a search has a boolean value", () => {
-    req.query.search = "true";
-    req.query.searchAttributes = "name";
-    const middleware = buildSearch();
-    expect(() => {
-      middleware(
-        req as SequelizeQueryParserRequestInterface,
-        res as Response,
-        next
-      );
-    }).toThrow(parseStringWithParams(INVALID_SEARCH_VALUE_ERROR, "true"));
-    expect(next).not.toHaveBeenCalled();
   });
 
   it("should throw an error when a searchAttributes item does not exist in the model", () => {

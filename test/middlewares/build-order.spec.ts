@@ -13,6 +13,7 @@ import { parseStringWithParams } from "../../src/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
+
 describe("Build Order Middleware", () => {
   let req: Partial<SequelizeQueryParserRequestInterface> & {
     sequelizeQueryParser: any;
@@ -25,7 +26,6 @@ describe("Build Order Middleware", () => {
     req = {
       sequelizeQueryParser: {
         model: db["User"],
-        order: null,
       },
       query: {}, // Define query here
     };

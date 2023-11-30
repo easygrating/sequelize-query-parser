@@ -6,6 +6,7 @@ import { INVALID_DATE, INVALID_NUMBER } from "../../src/core/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
+
 describe("Build where query middleware ", () => {
   let fakeNext: jest.Mock;
 
