@@ -37,8 +37,7 @@ describe("Build Search Middleware", () => {
 
   it("should skip to next middleware if req.query.search is not defined", () => {
     delete req.query.search;
-    const middleware = buildSearch();
-    middleware(
+    buildSearch(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -53,8 +52,7 @@ describe("Build Search Middleware", () => {
         { password: { [Op.like]: "%foo%" } },
       ],
     };
-    const middleware = buildSearch();
-    middleware(
+    buildSearch(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -67,8 +65,7 @@ describe("Build Search Middleware", () => {
   it("should return a valid Sequelize 'where' object when req.query.search and req.query.searchAttributes are valid", () => {
     req.query.searchAttributes = "password";
     const controlValue = { [Op.or]: [{ password: { [Op.like]: "%foo%" } }] };
-    const middleware = buildSearch();
-    middleware(
+    buildSearch(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -93,8 +90,7 @@ describe("Build Search Middleware", () => {
         { "Province.longitude": { [Op.like]: "%foo%" } },
       ],
     };
-    const middleware = buildSearch();
-    middleware(
+    buildSearch(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -106,9 +102,8 @@ describe("Build Search Middleware", () => {
 
   it("should throw an error when a searchAttributes item does not exist in the model", () => {
     req.query.searchAttributes = "name,description";
-    const middleware = buildSearch();
     expect(() => {
-      middleware(
+      buildSearch(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -119,9 +114,8 @@ describe("Build Search Middleware", () => {
 
   it("should throw an error when req.sequelizeQueryParser is not defined", () => {
     delete req.sequelizeQueryParser;
-    const middleware = buildSearch();
     expect(() => {
-      middleware(
+      buildSearch(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -132,9 +126,8 @@ describe("Build Search Middleware", () => {
 
   it("should throw an error when req.sequelizeQueryParser.model is not defined", () => {
     delete req.sequelizeQueryParser.model;
-    const middleware = buildSearch();
     expect(() => {
-      middleware(
+      buildSearch(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -145,9 +138,8 @@ describe("Build Search Middleware", () => {
 
   it("should throw an error when req.sequelizeQueryParser.where is not defined", () => {
     delete req.sequelizeQueryParser.where;
-    const middleware = buildSearch();
     expect(() => {
-      middleware(
+      buildSearch(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next

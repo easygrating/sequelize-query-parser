@@ -31,46 +31,40 @@ import { OrderType } from "../core/types";
  *
  * @returns {Function} Express middleware function.
  */
-export function buildOrder() {
-  return function (
-    req: SequelizeQueryParserRequestInterface,
-    res: Response,
-    next: NextFunction
-  ) {
-    // Check if necessary Sequelize query parser data exists
-    if (!req.sequelizeQueryParser) throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
-    if (!req.sequelizeQueryParser.model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
+export function buildOrder(req: SequelizeQueryParserRequestInterface, res: Response, next: NextFunction) {
+  // Check if necessary Sequelize query parser data exists
+  if (!req.sequelizeQueryParser) throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
+  if (!req.sequelizeQueryParser.model) throw new Error(MODEL_NOT_CONFIGURED_ERROR);
 
-    const model = req.sequelizeQueryParser.model;
-    const primaryKey = model.primaryKeyAttribute;
-    const timestampKey = !!model.options.timestamps && TIMESTAMP_ATTRIBUTE;
-    const attributes = Object.keys(model.rawAttributes);
+  const model = req.sequelizeQueryParser.model;
+  const primaryKey = model.primaryKeyAttribute;
+  const timestampKey = !!model.options.timestamps && TIMESTAMP_ATTRIBUTE;
+  const attributes = Object.keys(model.rawAttributes);
 
-    let order: OrderType[] = [
-      [
-        col(timestampKey ? timestampKey : primaryKey),
-        SortOrder.ORDER_SORT_DESC,
-      ],
-    ];
+  let order: OrderType[] = [
+    [
+      col(timestampKey ? timestampKey : primaryKey),
+      SortOrder.ORDER_SORT_DESC,
+    ],
+  ];
 
-    const rawOrder = req.query.order;
-    if (rawOrder && typeof rawOrder === "string") {
-      const parsedOrder = rawOrder.split(",").map<OrderType>((item) => {
-        const [column, direction] = item.split(":");
-        // Check if the specified column exists in the model's attributes
-        if (!attributes.includes(column)) {
-          // Handle when the attribute doesn't exist in the model
-          throw new Error(
-            parseStringWithParams(ATTRIBUTE_NOT_FOUND_ERROR, column)
-          );
-        }
-        return [col(column), direction.toUpperCase() as SortOrder];
-      });
-      order = parsedOrder;
-    }
+  const rawOrder = req.query.order;
+  if (rawOrder && typeof rawOrder === "string") {
+    const parsedOrder = rawOrder.split(",").map<OrderType>((item) => {
+      const [column, direction] = item.split(":");
+      // Check if the specified column exists in the model's attributes
+      if (!attributes.includes(column)) {
+        // Handle when the attribute doesn't exist in the model
+        throw new Error(
+          parseStringWithParams(ATTRIBUTE_NOT_FOUND_ERROR, column)
+        );
+      }
+      return [col(column), direction.toUpperCase() as SortOrder];
+    });
+    order = parsedOrder;
+  }
 
-    req.sequelizeQueryParser.order = order;
+  req.sequelizeQueryParser.order = order;
 
-    next();
-  };
+  next();
 }
