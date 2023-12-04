@@ -52,14 +52,11 @@ export function isBooleanValue(value: string): boolean {
  * @return {boolean|null} - The converted boolean value if the string is recognized as representing a boolean, otherwise null.
  */
 export function stringToBoolean(value: string) {
-  let result = null;
-  const sanitized = value.toLowerCase().trim()
+  let result: boolean | null = null;
+  const sanitized = value.toLowerCase().trim();
   const thrutyValues = ["true", "t", "1"];
   const falsyValues = ["false", "f", "0"];
-  if (thrutyValues.includes(sanitized)) {
-    result = true
-  } else if (falsyValues.includes(sanitized)) {
-    result = false;
-  }
-  return result;
+  if (thrutyValues.includes(sanitized)) result = true;
+  else if (falsyValues.includes(sanitized)) result = false;
+  else return result;
 }
