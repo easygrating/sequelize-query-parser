@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "test": "jest --coverage --detectOpenHandles"
   },
   "repository": {
