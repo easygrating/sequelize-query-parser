@@ -37,8 +37,7 @@ describe("Build Order Middleware", () => {
   });
 
   it("should set default order when req.query.order is undefined", () => {
-    const middleware = buildOrder();
-    middleware(
+    buildOrder(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -52,8 +51,7 @@ describe("Build Order Middleware", () => {
 
   it("should set order by id when req.query.order is undefined and timestamps are disabled", () => {
     req.sequelizeQueryParser.model = db["Province"];
-    const middleware = buildOrder();
-    middleware(
+    buildOrder(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -67,8 +65,7 @@ describe("Build Order Middleware", () => {
 
   it("should return a valid order when req.query.order is defined", () => {
     req.query.order = "name:asc";
-    const middleware = buildOrder();
-    middleware(
+    buildOrder(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
@@ -82,9 +79,8 @@ describe("Build Order Middleware", () => {
 
   it("should throw an error when attribute specified in req.query.order does not exist in the model", () => {
     req.query.order = "invalidAttribute:asc";
-    const middleware = buildOrder();
     expect(() => {
-      middleware(
+      buildOrder(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -97,9 +93,8 @@ describe("Build Order Middleware", () => {
 
   it("should throw an error when req.sequelizeQueryParser is not defined", () => {
     delete req.sequelizeQueryParser;
-    const middleware = buildOrder();
     expect(() => {
-      middleware(
+      buildOrder(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -110,9 +105,8 @@ describe("Build Order Middleware", () => {
 
   it("should throw an error when req.sequelizeQueryParser.model is not defined", () => {
     delete req.sequelizeQueryParser.model;
-    const middleware = buildOrder();
     expect(() => {
-      middleware(
+      buildOrder(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
