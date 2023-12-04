@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    name: Build library
+    name: Test library
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -16,9 +16,7 @@ jobs:
       - run: npm ci
         name: Install packages
       - run: npm test
-        name: Test library
-      - run: npm run build
-        name: Build library
+        name: Test library      
 
   publish-npm:
     needs: build
@@ -32,6 +30,8 @@ jobs:
           scope: "@easygrating"
       - run: npm ci
         name: Install packages
+      - run: npm run build
+        name: Build library
       - run: npm publish --access=public
         name: Publish package
         env:
