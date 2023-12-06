@@ -57,6 +57,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@easygrating/nmodules-loader": "^1.0.0",
     "inflection": "^3.0.0",
     "lodash": "^4.17.21",
     "luxon": "^3.4.4"
