@@ -1,9 +1,9 @@
 import { NextFunction, Response } from "express";
-import _ from "lodash";
 import { Model, Op } from "sequelize";
 import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import { parseStringWithParams } from "../utils";
 import { INVALID_FILTER, MODEL_ATTRIBUTE_NOT_FOUND } from "../core/constants";
+import { forEach, toPath, isNull, isUndefined, toNumber, set } from "lodash";
 
 /**
  * Middleware that builds a sequelize where query from a filter query param
@@ -31,15 +31,15 @@ export function buildFilter(
   const model = req.sequelizeQueryParser?.model;
   const filter = {};
 
-  _.forEach(rawFilter, (v) => {
-    const path = _.toPath(v);
+  forEach(rawFilter, (v) => {
+    const path = toPath(v);
 
     if (path.length < 2)
       throw new Error(parseStringWithParams(INVALID_FILTER, v));
 
     const value = path.pop();
     const pathWithOpperators = parsePath(path, model as typeof Model);
-    _.set(filter, pathWithOpperators as string[], value);
+    set(filter, pathWithOpperators as string[], value);
   });
 
   req.sequelizeQueryParser = {
@@ -64,10 +64,7 @@ function parsePath(paths: string[], model: typeof Model) {
       newPath.push(Op[item]);
       continue;
     }
-    if (
-      !(_.isNull(item) || _.isUndefined(item)) &&
-      _.isFinite(_.toNumber(item))
-    ) {
+    if (!(isNull(item) || isUndefined(item)) && isFinite(toNumber(item))) {
       newPath.push(item);
       continue;
     }
