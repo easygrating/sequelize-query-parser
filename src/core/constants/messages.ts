@@ -13,3 +13,6 @@ export const INVALID_NUMBER = "The param send is not a valid number";
 export const INVALID_DATE = "The param send is not a valid date";
 export const WHERE_CLAUSE_NOT_FOUND_ERROR =
   "To use 'buildSearch' you first must configure a 'where' clause using 'buildWhere' middleware";
+export const MODEL_ATTRIBUTE_NOT_FOUND =
+  "Attribute '{1}' does not belong to model '{2}'";
+export const INVALID_FILTER = "Invalid filter '{1}'";

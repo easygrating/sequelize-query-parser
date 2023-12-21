@@ -33,6 +33,11 @@ export interface SequelizeQueryParserDataInterface {
   query?: QueryType;
 
   /**
+   * Advanced where opperation
+   */
+  filter?: any;
+
+  /**
    * Additional properties for utility purposes.
    * @deprecated Future releases will replace this with more specific utility properties.
    */
