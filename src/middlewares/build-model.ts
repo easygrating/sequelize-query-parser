@@ -29,7 +29,7 @@ export function buildModel(
     const modelUrl = req.params.model;
     const model = Object.values(db).find((item) => {
       return (
-        item.prototype instanceof Model &&
+        !!item.name &&
         (item.name === modelName ||
           underscore(pluralize(item.name)) === modelUrl)
       );
