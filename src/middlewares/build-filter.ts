@@ -8,7 +8,10 @@ import { forEach, toPath, isNull, isUndefined, toNumber, set } from "lodash";
 /**
  * Middleware that builds a sequelize where query from a filter query param
  * with a dot notation
- * Ex: users?age.lte.40 -> where:{ age: { [Op.lte]: 40 }}
+ * @example
+ * // API_URL/RESOURCE/?age.lte.40
+ * // will be parsed to where:{ age: { [Op.lte]: 40 }}
+ *  app.get('/', buildFilter, ...)
  *
  * @throws {Error} Throws an error if an valid filter or model attribute is send in the query
  * @param req the custom request that extends from express.Request
@@ -51,7 +54,7 @@ export function buildFilter(
 }
 
 /**
- * Converts an string path to an array object path with opperators and validate attributes.
+ * Converts a string path to an array object path with opperators and validates attributes.
  * @param paths string path
  * @param model model object
  * @returns parsed paths
