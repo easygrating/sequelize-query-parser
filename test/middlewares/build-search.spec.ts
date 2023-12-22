@@ -100,6 +100,49 @@ describe("Build Search Middleware", () => {
     expect(next).toHaveBeenCalledTimes(1);
   });
 
+  it("should return a valid Sequelize 'where' object with deep nested 'include' model associations", () => {
+    req.query = { search: "foo", searchAttributes: "name" }
+    req.sequelizeQueryParser.model = db["SocialEvent"];
+    req.sequelizeQueryParser.include = [
+      {
+        association: "Album",
+        include: [
+          {
+            association: "Images",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+      {
+        association: "Municipality",
+        include: [
+          {
+            association: "Province",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+    ];
+    const controlValue = {
+      [Op.or]: [
+        { name: { [Op.like]: "%foo%" } },
+        { "Album.name": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.name": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.Province.name": { [Op.like]: "%foo%" } },
+      ],
+    };
+    buildSearch(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.where).toBeDefined();
+    expect(req.sequelizeQueryParser.where).toEqual(controlValue);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
   it("should throw an error when a searchAttributes item does not exist in the model", () => {
     req.query.searchAttributes = "name,description";
     expect(() => {

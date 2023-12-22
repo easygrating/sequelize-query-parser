@@ -9,6 +9,14 @@ import { parseStringWithParams } from "../utils";
 import { hasIn } from "lodash";
 import { IncludeObject } from "../core/interfaces/include-object.interface";
 
+/**
+ * Middleware to build the include array for Sequelize queries based on request parameters.
+ * @param req - Express request object with SequelizeQueryParserRequestInterface
+ * @param res - Express response object
+ * @param next - Express next function
+ * @throws {Error} SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR if necessary Sequelize query parser data is missing
+ * @throws {Error} MODEL_NOT_CONFIGURED_ERROR if the model is not configured in the request
+ */
 export function buildInclude(
   req: SequelizeQueryParserRequestInterface,
   res: Response,
@@ -42,6 +50,11 @@ export function buildInclude(
   next();
 }
 
+/**
+ * Builds an array of IncludeObject based on associations string.
+ * @param associationsString - Comma-separated string of associations
+ * @returns {IncludeObject[]} Array of IncludeObject for Sequelize queries
+ */
 function buildIncludeArray(associationsString: string): IncludeObject[] {
   // Split the string into individual associations
   const associations = associationsString.split(",");

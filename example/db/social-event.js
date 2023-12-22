@@ -1,41 +1,45 @@
 'use strict'
 const {
-	Model
+  Model
 } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
-	
-	class SocialEvent extends Model {
-		static associate(models) {
-			SocialEvent.belongsTo(models.Album, {
-				foreignKey: 'album_id',
-				onDelete: 'SET NULL'
-			})
-			SocialEvent.hasOne(models.Document)
-		}
-	}
 
-	SocialEvent.init({
-		name: {
-			type: DataTypes.STRING,
-			allowNull: false
-		},
-		description: {
-			type: DataTypes.TEXT,
-			allowNull: false
-		},
-		start_date: {
-			type: DataTypes.DATEONLY,
-			allowNull: false
-		},
-		end_date: {
-			type: DataTypes.DATEONLY,
-			allowNull: false
-		},
-	}, {
-		sequelize,
-		modelName: 'SocialEvent',
-		tableName: 'social_events',
-		underscored: true
-	})
-	return SocialEvent
+  class SocialEvent extends Model {
+    static associate(models) {
+      SocialEvent.belongsTo(models.Album, {
+        foreignKey: 'album_id',
+        onDelete: 'SET NULL'
+      })
+      SocialEvent.hasOne(models.Document)
+      SocialEvent.belongsTo(models.Municipality, {
+        onDelete: 'CASCADE',
+        foreignKey: 'municipality_id'
+      })
+    }
+  }
+
+  SocialEvent.init({
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    start_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+    end_date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false
+    },
+  }, {
+    sequelize,
+    modelName: 'SocialEvent',
+    tableName: 'social_events',
+    underscored: true
+  })
+  return SocialEvent
 }
