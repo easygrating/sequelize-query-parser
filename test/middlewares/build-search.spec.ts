@@ -77,7 +77,7 @@ describe("Build Search Middleware", () => {
 
   it("should return a valid Sequelize 'where' object with the included model associations", () => {
     req.sequelizeQueryParser.model = db["Municipality"];
-    req.sequelizeQueryParser.includes = "Province"; // TODO: update when includes middleware is defined
+    req.sequelizeQueryParser.include = [{ association: "Province", required: false }];
     const controlValue = {
       [Op.or]: [
         { name: { [Op.like]: "%foo%" } },
