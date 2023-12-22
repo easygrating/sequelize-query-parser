@@ -1,8 +1,8 @@
 import { Response } from "express";
-import { buildWhere } from "../../src/middlewares/build-where";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 import { DateTime } from "luxon";
 import { INVALID_DATE, INVALID_NUMBER } from "../../src/core/constants";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { buildWhere } from "../../src/middlewares";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");

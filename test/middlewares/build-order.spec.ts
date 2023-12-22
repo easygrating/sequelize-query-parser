@@ -1,5 +1,4 @@
 import { Response } from "express";
-import { buildOrder } from "../../src/middlewares/build-order";
 import { col } from "sequelize";
 import {
   ATTRIBUTE_NOT_FOUND_ERROR,
@@ -8,8 +7,9 @@ import {
   TIMESTAMP_ATTRIBUTE,
 } from "../../src/core/constants";
 import { SortOrder } from "../../src/core/enums";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 import { parseStringWithParams } from "../../src/utils";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { buildOrder } from "../../src/middlewares";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");

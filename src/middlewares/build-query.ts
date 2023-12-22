@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../core/constants";
-import { QueryType } from "../core/types/query-type";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
+import { QueryType } from "../core/types";
 
 /**
  * This function builds a query object based on the request parameters.

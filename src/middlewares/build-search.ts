@@ -1,5 +1,4 @@
 import { NextFunction, Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import {
   INVALID_SEARCH_ATTRIBUTES_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
@@ -10,6 +9,7 @@ import { Op, Sequelize } from "sequelize";
 import {
   WherePrimitives,
 } from "../core/types";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
 
 /**
  * Middleware function to build a search query based on provided parameters.

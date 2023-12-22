@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-import { buildQuery } from "../../src/middlewares/build-query";
 import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../../src/core/constants";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { buildQuery } from "../../src/middlewares";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
