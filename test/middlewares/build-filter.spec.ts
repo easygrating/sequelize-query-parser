@@ -1,12 +1,9 @@
 import { Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-import { buildFilter } from "../../src";
 import { Op } from "sequelize";
-import {
-  INVALID_FILTER,
-  MODEL_ATTRIBUTE_NOT_FOUND,
-} from "../../src/core/constants";
 import { parseStringWithParams } from "../../src/utils";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { buildFilter } from "../../src/middlewares";
+import { INVALID_FILTER, MODEL_ATTRIBUTE_NOT_FOUND } from "../../src/core/constants";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");

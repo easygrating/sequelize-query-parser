@@ -1,12 +1,19 @@
 import { Response } from "express";
-import { buildModel } from "../../src/middlewares/build-model";
 import { MODEL_NOT_FOUND_ERROR } from "../../src/core/constants";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
+import { QueryParserConfig } from "../../src/core/models";
+import { Model } from "sequelize";
+import { buildModel } from "../../src/middlewares";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
 
 describe("Build Model Middleware", () => {
+  const config = QueryParserConfig.getConfig();
+  config.configure({
+    customMiddlewaresPath: "./example/customMiddlewares",
+    models: Object.values<typeof Model>(db).filter((item) => !!item.name),
+  });
   let fakeNext: jest.Mock;
 
   beforeEach(() => {
@@ -14,7 +21,7 @@ describe("Build Model Middleware", () => {
   });
 
   it("must throw an error if model param is not associated with an existing model and not call next", () => {
-    const middleware = buildModel(db);
+    const middleware = buildModel();
     expect(() =>
       middleware({ params: { model: "pet" } } as any, {} as Response, fakeNext)
     ).toThrow(MODEL_NOT_FOUND_ERROR);
@@ -22,7 +29,7 @@ describe("Build Model Middleware", () => {
   });
 
   it("must throw an error if modelName is not associated with an existing model and not call next", () => {
-    const middleware = buildModel(db, "pet");
+    const middleware = buildModel("pet");
     expect(() =>
       middleware({ params: {} } as any, {} as Response, fakeNext)
     ).toThrow(MODEL_NOT_FOUND_ERROR);
@@ -43,7 +50,7 @@ describe("Build Model Middleware", () => {
   });
 
   it("must load Province model into queryParser request object matching with a given model name", () => {
-    const middleware = buildModel(db, "Municipality");
+    const middleware = buildModel("Municipality");
     const request: Partial<SequelizeQueryParserRequestInterface> = {
       params: {},
     };

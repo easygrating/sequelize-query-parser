@@ -8,8 +8,8 @@ import {
 } from "../core/constants";
 import { SortOrder } from "../core/enums";
 import { parseStringWithParams } from "../utils";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import { OrderType } from "../core/types";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
 
 /**
  * Middleware that generates a Sequelize query order object based on the `req.query.order` value.
