@@ -51,6 +51,31 @@ describe("Build Include Middleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
+  it("should yield an empty include object by default", () => {
+    const controlValue = [];
+    buildInclude(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.include).toBeDefined();
+    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("should yield an empty include object when req.query.include is an empty string", () => {
+    req.query.include = "";
+    const controlValue = [];
+    buildInclude(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.include).toBeDefined();
+    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(next).toHaveBeenCalled();
+  });
+
   it("should yield a valid include object with deep associations", () => {
     req.sequelizeQueryParser.model = db["SocialEvent"];
     req.query.include = "Document,Album.Images";
@@ -94,6 +119,18 @@ describe("Build Include Middleware", () => {
 
   it("should throw an error when req.query.include has an invalid deep association", () => {
     req.query.include = "Province.Radio";
+    expect(() => {
+      buildInclude(
+        req as SequelizeQueryParserRequestInterface,
+        res as Response,
+        next
+      );
+    }).toThrow(parseStringWithParams(INVALID_INCLUDE, "Municipality"));
+    expect(next).not.toHaveBeenCalled();
+  });
+
+  it("should throw an error when req.query.include has an invalid format", () => {
+    req.query.include = "Province.";
     expect(() => {
       buildInclude(
         req as SequelizeQueryParserRequestInterface,
