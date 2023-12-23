@@ -1,9 +1,12 @@
 import { Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
-import { buildCustomModel } from "../../src/middlewares/build-custom-model";
-import path from "path";
 import * as nmodulesLoader from "@easygrating/nmodules-loader";
-import { CustomModelMiddlewareInterface } from "../../src/core/interfaces/custom-model-middleware.interface";
+import { Model } from "sequelize";
+import { buildCustomModel } from "../../src/middlewares";
+import {
+  SequelizeQueryParserRequestInterface,
+  CustomModelMiddlewareInterface,
+} from "../../src/core/interfaces";
+import { QueryParserConfig } from "../../src/core/models";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
@@ -13,6 +16,11 @@ describe("Build Custom Model", () => {
   let req: Partial<SequelizeQueryParserRequestInterface>;
   let res: Response;
   let customMiddlewares: CustomModelMiddlewareInterface[];
+  const config = QueryParserConfig.getConfig();
+  config.configure({
+    customMiddlewaresPath: "./example/customMiddlewares",
+    models: Object.values<typeof Model>(db).filter((item) => !!item.name),
+  });
 
   beforeEach(() => {
     fakeNext = jest.fn();
@@ -22,7 +30,7 @@ describe("Build Custom Model", () => {
     };
     res = {} as Response;
     customMiddlewares = nmodulesLoader.loadModules(
-      "./example/customMiddlewares"
+      config.customMiddlewaresPath
     );
     customMiddlewares.forEach((item) => (item.customMiddleware = jest.fn()));
   });
@@ -31,9 +39,7 @@ describe("Build Custom Model", () => {
     req.params = {
       model: "pets",
     };
-    const middleware = buildCustomModel(
-      path.resolve("./example/customMiddlewares")
-    );
+    const middleware = buildCustomModel();
 
     middleware(req as any, res, fakeNext);
     const customCalls = customMiddlewares.filter(
@@ -48,9 +54,7 @@ describe("Build Custom Model", () => {
     req.params = {
       model: "workouts",
     };
-    const middleware = buildCustomModel(
-      path.resolve("./example/customMiddlewares")
-    );
+    const middleware = buildCustomModel();
     middleware(req as any, res, fakeNext);
     expect(fakeNext.mock.calls).toHaveLength(0);
     const usedMiddleware = customMiddlewares.find(
@@ -67,9 +71,7 @@ describe("Build Custom Model", () => {
     req.sequelizeQueryParser = {
       model: db["User"],
     };
-    const middleware = buildCustomModel(
-      path.resolve("./example/customMiddlewares")
-    );
+    const middleware = buildCustomModel();
     middleware(req as any, res, fakeNext);
     expect(fakeNext.mock.calls).toHaveLength(0);
     const usedMiddleware = customMiddlewares.find(

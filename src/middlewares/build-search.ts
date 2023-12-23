@@ -1,5 +1,4 @@
 import { NextFunction, Response } from "express";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import {
   INVALID_SEARCH_ATTRIBUTES_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
@@ -8,9 +7,9 @@ import {
 } from "../core/constants";
 import { Model, Op, Sequelize } from "sequelize";
 import { WherePrimitives, WhereType } from "../core/types";
-import { IncludeObject } from "../core/interfaces/include-object.interface";
 import { findInclude, getAttributesByTypes } from "../utils";
 import { intersection } from "lodash";
+import { SequelizeQueryParserRequestInterface, IncludeObject } from "../core/interfaces";
 
 /**
  * Middleware function to build a search query based on provided parameters.

@@ -1,9 +1,9 @@
 import { NextFunction, Response } from "express";
 import { Model, Op } from "sequelize";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import { parseStringWithParams } from "../utils";
 import { INVALID_FILTER, MODEL_ATTRIBUTE_NOT_FOUND } from "../core/constants";
 import { forEach, toPath, isNull, isUndefined, toNumber, set } from "lodash";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
 
 /**
  * Middleware that builds a sequelize where query from a filter query param

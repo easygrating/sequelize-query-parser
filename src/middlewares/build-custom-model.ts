@@ -1,8 +1,9 @@
 import { Response, NextFunction } from "express";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
 import * as nmodulesLoader from "@easygrating/nmodules-loader";
-import { CustomModelMiddlewareInterface } from "../core/interfaces/custom-model-middleware.interface";
 import path from "path";
+import { DEFAULT_CUSTOM_MIDDLEWARES_PATH } from "../core/constants";
+import { SequelizeQueryParserRequestInterface, CustomModelMiddlewareInterface } from "../core/interfaces";
+import { QueryParserConfig } from "../core/models";
 
 /**
  * Middleware to call a custom middleware for a given route.
@@ -14,14 +15,15 @@ import path from "path";
  * @param {string} pathDir directory location for custom models
  * @returns custom express middleware for a given modelName parameter or a route parameter
  */
-export function buildCustomModel(pathDir?: string) {
+export function buildCustomModel() {
   return async (
     req: SequelizeQueryParserRequestInterface,
     res: Response,
     next: NextFunction
   ) => {
+    let pathDir = QueryParserConfig.getConfig().customMiddlewaresPath;
     if (!pathDir) {
-      pathDir = path.resolve("./src/customMiddlewares");
+      pathDir = path.resolve(DEFAULT_CUSTOM_MIDDLEWARES_PATH);
     }
     const middlewares: CustomModelMiddlewareInterface[] =
       nmodulesLoader.loadModules(pathDir);

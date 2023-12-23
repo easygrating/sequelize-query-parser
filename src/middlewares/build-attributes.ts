@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
-import { MODEL_NOT_CONFIGURED_ERROR, SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR } from "../core/constants";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
+import { SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR, MODEL_NOT_CONFIGURED_ERROR } from "../core/constants";
+import { SequelizeQueryParserRequestInterface } from "../core/interfaces";
 
 /**
  * Middleware to parse an HTTP query and build an attributes configuration object to use in a selection query

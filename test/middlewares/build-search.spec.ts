@@ -1,13 +1,13 @@
 import { Response } from "express";
-import { buildSearch } from "../../src/middlewares/build-search";
 import {
   INVALID_SEARCH_ATTRIBUTES_ERROR,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
   WHERE_CLAUSE_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
 import { Op } from "sequelize";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
+import { buildSearch } from "../../src/middlewares";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const db = require("./../../example/db");
