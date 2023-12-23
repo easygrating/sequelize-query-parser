@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { SequelizeQueryParserRequestInterface } from "../core/interfaces/sequelize-query-parser-request.interface";
+import { SequelizeQueryParserRequestInterface, IncludeObject } from "../core/interfaces";
 import {
   INVALID_INCLUDE,
   MODEL_NOT_CONFIGURED_ERROR,
@@ -7,7 +7,6 @@ import {
 } from "../core/constants";
 import { parseStringWithParams } from "../utils";
 import { hasIn } from "lodash";
-import { IncludeObject } from "../core/interfaces/include-object.interface";
 
 /**
  * Middleware to build the include array for Sequelize queries based on request parameters.

@@ -1,11 +1,11 @@
 import { Response } from "express";
-import { buildInclude } from "../../src/middlewares/build-include";
+import { buildInclude } from "../../src/middlewares";
 import {
   INVALID_INCLUDE,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
-import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces/sequelize-query-parser-request.interface";
+import { SequelizeQueryParserRequestInterface } from "../../src/core/interfaces";
 import { parseStringWithParams } from "../../src/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
