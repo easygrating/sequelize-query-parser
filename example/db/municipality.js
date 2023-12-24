@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: 'CASCADE',
 				foreignKey: 'province_id'
 			})
+      Municipality.hasMany(models.SocialEvent, {
+        as: 'Events'
+      })
 		}
 	}
 

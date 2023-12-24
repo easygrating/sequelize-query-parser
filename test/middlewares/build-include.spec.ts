@@ -105,6 +105,35 @@ describe("Build Include Middleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
+  it("should yield a valid include object with deep associations and sibling associations", () => {
+    req.sequelizeQueryParser.model = db["Municipality"];
+    req.query.include = "Events.Album,Events.Document";
+    const controlValue = [
+      {
+        association: "Events",
+        required: false,
+        include: [
+          {
+            association: "Album",
+            required: false,
+          },
+          {
+            association: "Document",
+            required: false,
+          },
+        ],
+      },
+    ];
+    buildInclude(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.include).toBeDefined();
+    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(next).toHaveBeenCalled();
+  });
+
   it("should throw an error when req.query.include has an invalid first level association", () => {
     req.query.include = "Radio";
     expect(() => {
