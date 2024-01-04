@@ -26,7 +26,7 @@ export function buildCustomModel() {
       pathDir = path.resolve(DEFAULT_CUSTOM_MIDDLEWARES_PATH);
     }
     const middlewares: CustomModelMiddlewareInterface[] =
-      nmodulesLoader.loadModules(pathDir);
+      await nmodulesLoader.loadModules(pathDir);
     const custom = middlewares.find(
       (item) =>
         item.route === req.params.model ||
