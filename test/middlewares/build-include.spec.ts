@@ -24,12 +24,12 @@ describe("Build Include Middleware", () => {
       sequelizeQueryParser: {
         model: db["Municipality"],
       },
-      query: {}, // Define query here
+      query: {},
     };
     res = {
-      status: jest.fn().mockReturnThis(), // Ensure 'status' returns 'this' (res) for chaining
+      status: jest.fn().mockReturnThis(),
       json: jest.fn(),
-    } as unknown as Response; // Explicitly define res as Response
+    } as unknown as Response;
     next = jest.fn();
   });
 
@@ -51,28 +51,24 @@ describe("Build Include Middleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
-  it("should yield an empty include object by default", () => {
-    const controlValue = [];
+  it("should call next middleware if no include", () => {
     buildInclude(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).toBeDefined();
-    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(req.sequelizeQueryParser.include).not.toBeDefined();
     expect(next).toHaveBeenCalled();
   });
 
   it("should yield an empty include object when req.query.include is an empty string", () => {
     req.query.include = "";
-    const controlValue = [];
     buildInclude(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).toBeDefined();
-    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(req.sequelizeQueryParser.include).not.toBeDefined();
     expect(next).toHaveBeenCalled();
   });
 
@@ -100,6 +96,7 @@ describe("Build Include Middleware", () => {
       res as Response,
       next
     );
+
     expect(req.sequelizeQueryParser.include).toBeDefined();
     expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
     expect(next).toHaveBeenCalled();
@@ -107,7 +104,7 @@ describe("Build Include Middleware", () => {
 
   it("should yield a valid include object with deep associations and sibling associations", () => {
     req.sequelizeQueryParser.model = db["Municipality"];
-    req.query.include = "Events.Album,Events.Document";
+    req.query.include = "Events.Album,Events.Document.Author";
     const controlValue = [
       {
         association: "Events",
@@ -120,6 +117,12 @@ describe("Build Include Middleware", () => {
           {
             association: "Document",
             required: false,
+            include: [
+              {
+                association: "Author",
+                required: false,
+              },
+            ],
           },
         ],
       },

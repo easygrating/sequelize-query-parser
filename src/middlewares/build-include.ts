@@ -1,5 +1,8 @@
 import { Response, NextFunction } from "express";
-import { SequelizeQueryParserRequestInterface, IncludeObject } from "../core/interfaces";
+import {
+  SequelizeQueryParserRequestInterface,
+  IncludeObject,
+} from "../core/interfaces";
 import {
   INVALID_INCLUDE,
   MODEL_NOT_CONFIGURED_ERROR,
@@ -7,6 +10,7 @@ import {
 } from "../core/constants";
 import { parseStringWithParams } from "../utils";
 import { hasIn } from "lodash";
+import { Tree } from "@easygrating/easytree";
 
 /**
  * Middleware to build the include array for Sequelize queries based on request parameters.
@@ -21,64 +25,57 @@ export function buildInclude(
   res: Response,
   next: NextFunction
 ) {
-  // Check if necessary Sequelize query parser data exists
   if (!req.sequelizeQueryParser)
     throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
   if (!req.sequelizeQueryParser.model)
     throw new Error(MODEL_NOT_CONFIGURED_ERROR);
 
   const model = req.sequelizeQueryParser.model;
-  let include;
   if (!req.query.include) {
-    include = [];
-  } else {
-    let valid = false;
-    const includes = (req.query.include as string).split(",");
-    includes.forEach((includeItem) => {
-      const checkInclude = includeItem.split(".").join(".target.associations.");
-      valid = hasIn(model, "associations." + checkInclude);
-      if (!valid) {
-        throw new Error(parseStringWithParams(INVALID_INCLUDE, model.name));
-      }
-    });
-    include = buildIncludeArray(req.query.include as string);
+    return next();
   }
 
-  // Add the include array to the request object for later use
-  req.sequelizeQueryParser.include = include;
+  let valid = false;
+  const includes = (req.query.include as string).split(",");
+  includes.forEach((includeItem) => {
+    const checkInclude = includeItem.split(".").join(".target.associations.");
+    valid = hasIn(model, "associations." + checkInclude);
+    if (!valid) {
+      throw new Error(parseStringWithParams(INVALID_INCLUDE, model.name));
+    }
+  });
+  const associationTree = buildAssociations(req.query.include as string);
+  req.sequelizeQueryParser.include = associationTree.include;
   next();
 }
 
 /**
  * Builds an array of IncludeObject based on associations string.
- * @param associationsString - Comma-separated string of associations
- * @returns {IncludeObject[]} Array of IncludeObject for Sequelize queries
+ * @param associationsString - Comma-separated string of associations in dot notation
+ * @returns {IncludeObject} Array of IncludeObject for Sequelize queries
  */
-function buildIncludeArray(associationsString: string): IncludeObject[] {
-  // Split the string into individual associations
+function buildAssociations(associationsString: string): IncludeObject {
   const associations = associationsString.split(",");
+  const tree = new Tree("root", { include: [] } as Partial<IncludeObject>);
+  associations.forEach((item) => processPath(tree, item));
+  return tree.toJSON<IncludeObject>("include");
+}
 
-  // Map each association to an object
-  const include: IncludeObject[] = associations.map((association) => {
-    // Split nested associations
-    const nestedAssociations = association.split(".").reverse();
-
-    // Build the include object recursively
-    let includeObject: IncludeObject = {
-      association: nestedAssociations[0],
-      required: false,
-    };
-
-    for (let i = 1; i < nestedAssociations.length; i++) {
-      includeObject = {
-        association: nestedAssociations[i],
-        required: false,
-        include: [includeObject],
-      };
-    }
-
-    return includeObject;
-  });
-
-  return include;
+/**
+ * Process an association path and add it to the association tree
+ * @param tree association tree
+ * @param path association path in dot notation
+ */
+function processPath(tree: Tree<unknown>, path: string) {
+  let pointer = tree.id;
+  const splitPath = path.split(".");
+  for (let i = 0; i < splitPath.length; i++) {
+    // Node id is built from the begining of the array to the current path to avoid duplicated association conflicts
+    const id = splitPath.slice(0, i + 1).join();
+    tree.addChildAt(
+      new Tree(id, { association: splitPath[i], required: false }),
+      pointer
+    );
+    pointer = id;
+  }
 }
