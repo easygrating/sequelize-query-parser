@@ -14,6 +14,11 @@ module.exports = (sequelize, DataTypes) => {
 				foreignKey: 'album_id',
 				onDelete: 'CASCADE'
 			})
+			Document.belongsTo(models.User, {
+        as: 'Author',
+				foreignKey: 'author_id',
+				onDelete: 'CASCADE'
+			})
 		}
 	}
 
