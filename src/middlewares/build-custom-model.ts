@@ -12,7 +12,6 @@ import { QueryParserConfig } from "../core/models";
  * It will call the first middleware that has route property equals to req.params.model
  * or modelName property is equal to the loaded model name in the request object.
  *
- * @param {string} pathDir directory location for custom models
  * @returns custom express middleware for a given modelName parameter or a route parameter
  */
 export function buildCustomModel() {
