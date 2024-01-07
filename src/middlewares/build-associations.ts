@@ -4,7 +4,7 @@ import {
   IncludeObject,
 } from "../core/interfaces";
 import {
-  INVALID_INCLUDE,
+  INVALID_ASSOCIATION_PATH,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
 } from "../core/constants";
@@ -20,7 +20,7 @@ import { Tree } from "@easygrating/easytree";
  * @throws {Error} SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR if necessary Sequelize query parser data is missing
  * @throws {Error} MODEL_NOT_CONFIGURED_ERROR if the model is not configured in the request
  */
-export function buildInclude(
+export function buildAssociations(
   req: SequelizeQueryParserRequestInterface,
   res: Response,
   next: NextFunction
@@ -41,11 +41,13 @@ export function buildInclude(
     const checkInclude = includeItem.split(".").join(".target.associations.");
     valid = hasIn(model, "associations." + checkInclude);
     if (!valid) {
-      throw new Error(parseStringWithParams(INVALID_INCLUDE, model.name));
+      throw new Error(
+        parseStringWithParams(INVALID_ASSOCIATION_PATH, includeItem, model.name)
+      );
     }
   });
-  const associationTree = buildAssociations(req.query.include as string);
-  req.sequelizeQueryParser.include = associationTree.include;
+  const associationTree = parseAssociationsQuery(req.query.include as string);
+  req.sequelizeQueryParser.associations = associationTree.include;
   next();
 }
 
@@ -54,7 +56,7 @@ export function buildInclude(
  * @param associationsString - Comma-separated string of associations in dot notation
  * @returns {IncludeObject} Array of IncludeObject for Sequelize queries
  */
-function buildAssociations(associationsString: string): IncludeObject {
+function parseAssociationsQuery(associationsString: string): IncludeObject {
   const associations = associationsString.split(",");
   const tree = new Tree("root", { include: [] } as Partial<IncludeObject>);
   associations.forEach((item) => processPath(tree, item));

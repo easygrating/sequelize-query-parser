@@ -41,7 +41,7 @@ export interface SequelizeQueryParserDataInterface {
   /**
    * Model include associations
    */
-  include?: IncludeObject[];
+  associations?: IncludeObject[];
 
   /**
    * Additional properties for utility purposes.

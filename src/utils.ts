@@ -94,13 +94,9 @@ export function getAttributesByTypes(
   model: typeof Model,
   types: string[]
 ): string[] {
-  // Retrieve all attribute names from the rawAttributes of the Sequelize model
   const attributes = Object.keys(model.rawAttributes)
-    // Filter the attributes based on their data types ex.: ["STRING", "TEXT"]
     .filter((attribute) => {
-      // Get the data type of the attribute
       const dataType = model.rawAttributes[attribute].type.constructor.name;
-      // Include attributes with data types STRING or TEXT
       return types.includes(dataType);
     });
 

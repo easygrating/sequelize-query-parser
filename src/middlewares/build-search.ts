@@ -48,7 +48,7 @@ export function buildSearch(
 
   // Extracting sequelize-query-parser parameters
   const where = req.sequelizeQueryParser.where;
-  const include = req.sequelizeQueryParser.include || [];
+  const include = req.sequelizeQueryParser.associations || [];
 
   // Extracting query parameters
   const search = req.query.search as string;

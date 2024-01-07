@@ -16,4 +16,4 @@ export const WHERE_CLAUSE_NOT_FOUND_ERROR =
 export const MODEL_ATTRIBUTE_NOT_FOUND =
   "Attribute '{1}' does not belong to model '{2}'";
 export const INVALID_FILTER = "Invalid filter '{1}'";
-export const INVALID_INCLUDE = "Invalid association for model '{1}'";
+export const INVALID_ASSOCIATION_PATH = "Invalid association path {1} for model '{2}'";

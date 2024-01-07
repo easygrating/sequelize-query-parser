@@ -1,7 +1,7 @@
 import { Response } from "express";
-import { buildInclude } from "../../src/middlewares";
+import { buildAssociations } from "../../src/middlewares";
 import {
-  INVALID_INCLUDE,
+  INVALID_ASSOCIATION_PATH,
   MODEL_NOT_CONFIGURED_ERROR,
   SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR,
 } from "../../src/core/constants";
@@ -41,34 +41,34 @@ describe("Build Include Middleware", () => {
         required: false,
       },
     ];
-    buildInclude(
+    buildAssociations(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).toBeDefined();
-    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(req.sequelizeQueryParser.associations).toBeDefined();
+    expect(req.sequelizeQueryParser.associations).toStrictEqual(controlValue);
     expect(next).toHaveBeenCalled();
   });
 
   it("should call next middleware if no include", () => {
-    buildInclude(
+    buildAssociations(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).not.toBeDefined();
+    expect(req.sequelizeQueryParser.associations).not.toBeDefined();
     expect(next).toHaveBeenCalled();
   });
 
   it("should yield an empty include object when req.query.include is an empty string", () => {
     req.query.include = "";
-    buildInclude(
+    buildAssociations(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).not.toBeDefined();
+    expect(req.sequelizeQueryParser.associations).not.toBeDefined();
     expect(next).toHaveBeenCalled();
   });
 
@@ -91,14 +91,14 @@ describe("Build Include Middleware", () => {
         required: false,
       },
     ];
-    buildInclude(
+    buildAssociations(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
 
-    expect(req.sequelizeQueryParser.include).toBeDefined();
-    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(req.sequelizeQueryParser.associations).toBeDefined();
+    expect(req.sequelizeQueryParser.associations).toStrictEqual(controlValue);
     expect(next).toHaveBeenCalled();
   });
 
@@ -127,56 +127,74 @@ describe("Build Include Middleware", () => {
         ],
       },
     ];
-    buildInclude(
+    buildAssociations(
       req as SequelizeQueryParserRequestInterface,
       res as Response,
       next
     );
-    expect(req.sequelizeQueryParser.include).toBeDefined();
-    expect(req.sequelizeQueryParser.include).toStrictEqual(controlValue);
+    expect(req.sequelizeQueryParser.associations).toBeDefined();
+    expect(req.sequelizeQueryParser.associations).toStrictEqual(controlValue);
     expect(next).toHaveBeenCalled();
   });
 
   it("should throw an error when req.query.include has an invalid first level association", () => {
     req.query.include = "Radio";
     expect(() => {
-      buildInclude(
+      buildAssociations(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
       );
-    }).toThrow(parseStringWithParams(INVALID_INCLUDE, "Municipality"));
+    }).toThrow(
+      parseStringWithParams(
+        INVALID_ASSOCIATION_PATH,
+        req.query.include,
+        "Municipality"
+      )
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
   it("should throw an error when req.query.include has an invalid deep association", () => {
     req.query.include = "Province.Radio";
     expect(() => {
-      buildInclude(
+      buildAssociations(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
       );
-    }).toThrow(parseStringWithParams(INVALID_INCLUDE, "Municipality"));
+    }).toThrow(
+      parseStringWithParams(
+        INVALID_ASSOCIATION_PATH,
+        req.query.include,
+        "Municipality"
+      )
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
   it("should throw an error when req.query.include has an invalid format", () => {
     req.query.include = "Province.";
     expect(() => {
-      buildInclude(
+      buildAssociations(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
       );
-    }).toThrow(parseStringWithParams(INVALID_INCLUDE, "Municipality"));
+    }).toThrow(
+      parseStringWithParams(
+        INVALID_ASSOCIATION_PATH,
+        req.query.include,
+        "Municipality"
+      )
+    );
     expect(next).not.toHaveBeenCalled();
   });
 
   it("should throw an error when req.sequelizeQueryParser is not defined", () => {
     delete req.sequelizeQueryParser;
     expect(() => {
-      buildInclude(
+      buildAssociations(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next
@@ -188,7 +206,7 @@ describe("Build Include Middleware", () => {
   it("should throw an error when req.sequelizeQueryParser.model is not defined", () => {
     delete req.sequelizeQueryParser.model;
     expect(() => {
-      buildInclude(
+      buildAssociations(
         req as SequelizeQueryParserRequestInterface,
         res as Response,
         next

@@ -28,7 +28,7 @@ export function buildQuery() {
       throw new Error(SEQUELIZE_QUERY_PARSER_DATA_NOT_FOUND_ERROR);
 
     const where = req.sequelizeQueryParser.where;
-    const include = req.sequelizeQueryParser.include || [];
+    const include = req.sequelizeQueryParser.associations || [];
     const attributes = req.sequelizeQueryParser.attributes;
     const order = req.sequelizeQueryParser.order;
     const limit = req.query.limit ? +req.query.limit : 10;

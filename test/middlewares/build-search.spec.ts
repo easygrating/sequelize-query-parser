@@ -77,7 +77,7 @@ describe("Build Search Middleware", () => {
 
   it("should return a valid Sequelize 'where' object with the included model associations", () => {
     req.sequelizeQueryParser.model = db["Municipality"];
-    req.sequelizeQueryParser.include = [{ association: "Province", required: false }];
+    req.sequelizeQueryParser.associations = [{ association: "Province", required: false }];
     const controlValue = {
       [Op.or]: [
         { name: { [Op.like]: "%foo%" } },
@@ -103,7 +103,7 @@ describe("Build Search Middleware", () => {
   it("should return a valid Sequelize 'where' object with deep nested 'include' model associations", () => {
     req.query = { search: "foo", searchAttributes: "name" }
     req.sequelizeQueryParser.model = db["SocialEvent"];
-    req.sequelizeQueryParser.include = [
+    req.sequelizeQueryParser.associations = [
       {
         association: "Album",
         include: [
@@ -146,7 +146,7 @@ describe("Build Search Middleware", () => {
   it("should return a valid Sequelize 'where' object with deep nested 'include' model associations using only searchable attributes of top model", () => {
     req.query = { search: "foo" }
     req.sequelizeQueryParser.model = db["SocialEvent"];
-    req.sequelizeQueryParser.include = [
+    req.sequelizeQueryParser.associations = [
       {
         association: "Album",
         include: [
