@@ -6,3 +6,4 @@ export * from "./build-order";
 export * from "./build-query";
 export * from "./build-search";
 export * from "./build-where";
+export * from "./build-associations";

@@ -22,26 +22,26 @@ describe("Build Custom Model", () => {
     models: Object.values<typeof Model>(db).filter((item) => !!item.name),
   });
 
-  beforeEach(() => {
+  beforeEach(async () => {
     fakeNext = jest.fn();
     req = {
       sequelizeQueryParser: {},
       params: {},
     };
     res = {} as Response;
-    customMiddlewares = nmodulesLoader.loadModules(
+    customMiddlewares = await nmodulesLoader.loadModules(
       config.customMiddlewaresPath
     );
     customMiddlewares.forEach((item) => (item.customMiddleware = jest.fn()));
   });
 
-  it("must call next if no custom middleware is found", () => {
+  it("must call next if no custom middleware is found", async () => {
     req.params = {
       model: "pets",
     };
     const middleware = buildCustomModel();
 
-    middleware(req as any, res, fakeNext);
+    await middleware(req as any, res, fakeNext);
     const customCalls = customMiddlewares.filter(
       (item) => (item.customMiddleware as jest.Mock).mock.calls.length
     );
@@ -50,12 +50,12 @@ describe("Build Custom Model", () => {
     expect(fakeNext.mock.calls).toHaveLength(1);
   });
 
-  it("must call customMiddleware function from custom workout middleware by route param", () => {
+  it("must call customMiddleware function from custom workout middleware by route param", async () => {
     req.params = {
       model: "workouts",
     };
     const middleware = buildCustomModel();
-    middleware(req as any, res, fakeNext);
+    await middleware(req as any, res, fakeNext);
     expect(fakeNext.mock.calls).toHaveLength(0);
     const usedMiddleware = customMiddlewares.find(
       (item) => item.route === req.params?.model
@@ -67,12 +67,12 @@ describe("Build Custom Model", () => {
     expect(customCalls).toHaveLength(1);
   });
 
-  it("must call customMiddleware function from custom user middleware by model name", () => {
+  it("must call customMiddleware function from custom user middleware by model name", async () => {
     req.sequelizeQueryParser = {
       model: db["User"],
     };
     const middleware = buildCustomModel();
-    middleware(req as any, res, fakeNext);
+    await middleware(req as any, res, fakeNext);
     expect(fakeNext.mock.calls).toHaveLength(0);
     const usedMiddleware = customMiddlewares.find(
       (item) => item.modelName === req.sequelizeQueryParser?.model?.name

@@ -77,7 +77,7 @@ describe("Build Search Middleware", () => {
 
   it("should return a valid Sequelize 'where' object with the included model associations", () => {
     req.sequelizeQueryParser.model = db["Municipality"];
-    req.sequelizeQueryParser.includes = "Province"; // TODO: update when includes middleware is defined
+    req.sequelizeQueryParser.associations = [{ association: "Province", required: false }];
     const controlValue = {
       [Op.or]: [
         { name: { [Op.like]: "%foo%" } },
@@ -88,6 +88,94 @@ describe("Build Search Middleware", () => {
         { "Province.code": { [Op.like]: "%foo%" } },
         { "Province.latitude": { [Op.like]: "%foo%" } },
         { "Province.longitude": { [Op.like]: "%foo%" } },
+      ],
+    };
+    buildSearch(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.where).toBeDefined();
+    expect(req.sequelizeQueryParser.where).toEqual(controlValue);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it("should return a valid Sequelize 'where' object with deep nested 'include' model associations", () => {
+    req.query = { search: "foo", searchAttributes: "name" }
+    req.sequelizeQueryParser.model = db["SocialEvent"];
+    req.sequelizeQueryParser.associations = [
+      {
+        association: "Album",
+        include: [
+          {
+            association: "Images",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+      {
+        association: "Municipality",
+        include: [
+          {
+            association: "Province",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+    ];
+    const controlValue = {
+      [Op.or]: [
+        { name: { [Op.like]: "%foo%" } },
+        { "Album.name": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.name": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.Province.name": { [Op.like]: "%foo%" } },
+      ],
+    };
+    buildSearch(
+      req as SequelizeQueryParserRequestInterface,
+      res as Response,
+      next
+    );
+    expect(req.sequelizeQueryParser.where).toBeDefined();
+    expect(req.sequelizeQueryParser.where).toEqual(controlValue);
+    expect(next).toHaveBeenCalledTimes(1);
+  });
+
+  it("should return a valid Sequelize 'where' object with deep nested 'include' model associations using only searchable attributes of top model", () => {
+    req.query = { search: "foo" }
+    req.sequelizeQueryParser.model = db["SocialEvent"];
+    req.sequelizeQueryParser.associations = [
+      {
+        association: "Album",
+        include: [
+          {
+            association: "Images",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+      {
+        association: "Municipality",
+        include: [
+          {
+            association: "Province",
+            required: false,
+          },
+        ],
+        required: false,
+      },
+    ];
+    const controlValue = {
+      [Op.or]: [
+        { name: { [Op.like]: "%foo%" } },
+        { description: { [Op.like]: "%foo%" } },
+        { "Album.name": { [Op.like]: "%foo%" } },
+        { "Album.description": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.name": { [Op.like]: "%foo%" } },
+        { "Album.Municipality.Province.name": { [Op.like]: "%foo%" } },
       ],
     };
     buildSearch(

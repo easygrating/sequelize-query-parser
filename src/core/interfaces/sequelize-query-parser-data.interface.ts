@@ -2,6 +2,7 @@ import { Model } from "sequelize";
 import { AttributesConfig } from "./attributes-config.interface";
 import { OrderType, WhereType } from "../types";
 import { QueryType } from "../types/query-type";
+import { IncludeObject } from "./include-object.interface";
 
 /**
  * Data structure to contain Sequelize-related properties within the Express Request object.
@@ -36,6 +37,11 @@ export interface SequelizeQueryParserDataInterface {
    * Advanced where opperation
    */
   filter?: any;
+
+  /**
+   * Model include associations
+   */
+  associations?: IncludeObject[];
 
   /**
    * Additional properties for utility purposes.

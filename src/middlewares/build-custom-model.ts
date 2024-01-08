@@ -12,7 +12,6 @@ import { QueryParserConfig } from "../core/models";
  * It will call the first middleware that has route property equals to req.params.model
  * or modelName property is equal to the loaded model name in the request object.
  *
- * @param {string} path directory location for custom models
  * @returns custom express middleware for a given modelName parameter or a route parameter
  */
 export function buildCustomModel() {
@@ -26,7 +25,7 @@ export function buildCustomModel() {
       pathDir = path.resolve(DEFAULT_CUSTOM_MIDDLEWARES_PATH);
     }
     const middlewares: CustomModelMiddlewareInterface[] =
-      nmodulesLoader.loadModules(pathDir);
+      await nmodulesLoader.loadModules(pathDir);
     const custom = middlewares.find(
       (item) =>
         item.route === req.params.model ||
